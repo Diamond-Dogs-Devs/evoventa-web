@@ -1,0 +1,47 @@
+{
+  "name": "ui",
+  "root": "libs/ui",
+  "sourceRoot": "libs/ui/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/ui",
+        "tsConfig": "libs/ui/tsconfig.lib.json",
+        "entryFile": "libs/ui/src/index.ts",
+        "external": ["react", "react-dom"]
+      }
+    },
+    "storybook": {
+      "executor": "@nx/storybook:storybook",
+      "options": {
+        "configDir": "libs/ui/.storybook",
+        "port": 6006
+      }
+    },
+    "build-storybook": {
+      "executor": "@nx/storybook:build",
+      "options": {
+        "configDir": "libs/ui/.storybook",
+        "outputDir": "dist/storybook/ui"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["coverage/libs/ui"],
+      "options": {
+        "jestConfig": "libs/ui/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ui/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

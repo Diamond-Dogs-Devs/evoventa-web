@@ -1,26 +1,80 @@
 @import "tailwindcss";
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* Blue */
+  --color-blue-100: #E1E6FF;
+  --color-blue-200: #CED6FF;
+  --color-blue-300: #A6B5FF;
+  --color-blue-400: #7F94FF;
+  --color-blue-500: #5873FF;
+  --color-blue-600: #3A5AFF;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Primary */
+  --color-primary-100: #DADBE3;
+  --color-primary-200: #C1C2CF;
+  --color-primary-300: #8F92A9;
+  --color-primary-400: #5D6183;
+  --color-primary-500: #2B305E;
+  --color-primary-600: #060C41;
+
+  /* Ghost Blue */
+  --color-ghost-blue-50: #f5f9fc;
+  --color-ghost-blue-100: #FCFCFF;
+  --color-ghost-blue-200: #F9F9FF;
+  --color-ghost-blue-300: #F5F5FF;
+  --color-ghost-blue-400: #F1F1FF;
+  --color-ghost-blue-500: #ECECFF;
+  --color-ghost-blue-600: #E9E9FF;
+
+  /* Light Gray */
+  --color-light-gray-100: #EAECF2;
+  --color-light-gray-200: #DCE0EA;
+  --color-light-gray-300: #C0C7D9;
+  --color-light-gray-400: #A5AEC8;
+  --color-light-gray-500: #8996B8;
+  --color-light-gray-600: #7483AB;
+
+  /* Magenta */
+  --color-magenta-100: #FDD9E9;
+  --color-magenta-200: #FCBFDB;
+  --color-magenta-300: #F98CBE;
+  --color-magenta-400: #F759A1;
+  --color-magenta-500: #F42684;
+  --color-magenta-600: #F2006E;
+
+  /* Status */
+  --color-success-100: #34DD00;
+  --color-warning-100: #FFE100;
+  --color-error-100: #DA1B1B;
+
+  /* Title */
+  --color-title-primary: #2C3E50;
+  --color-title-secondary: #34495E;
+  --color-title-light: #ECF0F1;
+  --color-title-caution: #E74C3C;
+
+  /* Button */
+  --color-button-primary: #1E417D;
+  --color-button-primaryAlt: #183464;
+  --color-button-secondary: #E74C3C;
+  --color-button-secondaryAlt: #B93D30;
+
+  /* Background */
+  --color-background-primary: #F7F9FC;
+  --color-background-primaryAlt: #ECF0F1;
+  --color-background-secondary: #1E417D;
+  --color-background-secondaryAlt: #E74C3C;
+  --color-background-gray: #2C3E50;
+  --color-background-grayAlt: #34495E;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

@@ -3,15 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 4000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 4000",
     "lint": "eslint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^4.23.0",
+    "@headlessui/react": "^2.2.10",
+    "@heroicons/react": "^2.2.0",
+    "@tanstack/react-table": "^8.21.3",
+    "axios": "^1.18.1",
+    "classnames": "^2.5.1",
+    "date-fns": "^4.4.0",
+    "formik": "^2.4.9",
+    "moment-timezone": "^0.6.2",
     "next": "16.2.9",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-datepicker": "^9.1.0",
+    "react-dom": "19.2.4",
+    "react-merge-refs": "^3.0.2",
+    "react-toastify": "^11.1.0",
+    "swr": "^2.4.2",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
