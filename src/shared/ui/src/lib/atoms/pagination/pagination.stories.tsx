@@ -1,49 +1,41 @@
-import type { Meta } from '@storybook/react';
-import { default as Pagination } from './pagination';
+import type { Meta } from "@storybook/react";
+import Pagination from "./pagination";
 
 const Story: Meta<typeof Pagination> = {
   component: Pagination,
-  title: 'Pagination',
-  tags: ['autodocs'],
+  title: "Pagination",
+  tags: ["autodocs"],
   argTypes: {
+    currentPage: {
+      description: "Current page.",
+    },
+    totalPages: {
+      description: "Total number of pages.",
+    },
+    pageSize: {
+      description: "Current page size.",
+    },
     pageSizeOptions: {
-      description: 'Options for the page size select.',
+      description: "Options for the page size select.",
     },
-    pageIndex: {
-      description: 'The current page index.',
+    onPageChange: {
+      action: "pageChanged",
     },
-    currentLimit: {
-      description: 'The current page size or limit.',
-    },
-    hasPreviousPage: {
-      description: 'Indicates if there is a previous page available.',
-    },
-    hasNextPage: {
-      description: 'Indicates if there is a next page available.',
-    },
-    pages: {
-      description: 'An array of available page numbers.',
+    onPageSizeChange: {
+      action: "pageSizeChanged",
     },
   },
 };
 
 export default Story;
 
-export const Primary = (args) => (
-  <Pagination
-    {...args}
-    setPageIndex={args.onPaginationChange}
-    setPageSize={(size) => {
-      args.onPaginationChange && args.onPaginationChange(0, size);
-    }}
-  />
+export const Primary = (args: React.ComponentProps<typeof Pagination>) => (
+  <Pagination {...args} />
 );
 
 Primary.args = {
-  pageSizeOptions: [1, 2, 3, 4],
-  pageIndex: 1,
-  currentLimit: 4,
-  hasPreviousPage: true,
-  hasNextPage: true,
-  pages: [0, 1, 2, 3],
+  currentPage: 1,
+  totalPages: 4,
+  pageSize: 10,
+  pageSizeOptions: [10, 20, 50],
 };

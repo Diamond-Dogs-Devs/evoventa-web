@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikValues } from "formik";
 import {
   Button,
   Card,
@@ -12,7 +11,17 @@ import {
 } from "@/shared/ui";
 import { addProductSchema } from "../schemas/addProduct";
 
-export const UpdateProductModal = ({ handleUpdateProduct, close, values }) => {
+interface UpdateProductModalProps {
+  handleUpdateProduct: (values: FormikValues) => void | Promise<void>;
+  close: () => void;
+  values: FormikValues;
+}
+
+export const UpdateProductModal = ({
+  handleUpdateProduct,
+  close,
+  values,
+}: UpdateProductModalProps) => {
   const ADD_PRODUCT_FORM_INITIAL_VALUES = {
     name: values.name || "",
     price: values.price || 0,

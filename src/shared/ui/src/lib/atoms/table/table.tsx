@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
+import type { PaginationState } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -70,18 +71,16 @@ export function Table<T extends object>({
   onDelete,
   onLastMovements,
 }: TableProps<T>) {
-  const pagination = useMemo(() => {
-    return {
-      pageIndex: currentPage,
-      pageSize: currentLimit,
-    };
-  }, [currentPage, currentLimit]);
+  const pagination: PaginationState = {
+    pageIndex: (currentPage ?? 1) - 1,
+    pageSize: currentLimit ?? PAGE_SIZE_OPTIONS[0],
+  };
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
@@ -266,8 +265,12 @@ export function Table<T extends object>({
                         }}
                         className={`p-4 text-sm ${
                           typeof path === "string"
-                            ? path && "cursor-pointer"
-                            : path(row) && path && "cursor-pointer"
+                            ? path
+                              ? "cursor-pointer"
+                              : ""
+                            : path(row)
+                              ? "cursor-pointer"
+                              : ""
                         } ${tdBgGroup}`}
                       >
                         <div
@@ -344,23 +347,19 @@ export function Table<T extends object>({
       </table>
       {withPagination && data && (
         <Pagination
+          currentPage={currentPage ?? 1}
+          totalPages={totalPages ?? 1}
+          pageSize={currentLimit ?? PAGE_SIZE_OPTIONS[0]}
           pageSizeOptions={PAGE_SIZE_OPTIONS}
-          setPageSize={(size: number) => {
+          onPageChange={(page) => {
+            table.setPageIndex(page - 1);
+            onPaginationChange?.(page);
+          }}
+          onPageSizeChange={(size) => {
             table.setPageIndex(0);
             table.setPageSize(size);
-            onPaginationChange && onPaginationChange(1, size);
+            onPaginationChange?.(1, size);
           }}
-          hasPreviousPage={(currentPage ?? 1) > 1}
-          currentLimit={currentLimit}
-          setPageIndex={(index) => {
-            table.setPageIndex(index);
-            onPaginationChange && onPaginationChange(index + 1);
-          }}
-          pageIndex={(currentPage ?? 1) - 1}
-          hasNextPage={(currentPage ?? 1) < (totalPages ?? 0)}
-          pages={paginateArray({
-            pageIndex: (currentPage ?? 1) - 1,
-          })}
         />
       )}
     </div>
