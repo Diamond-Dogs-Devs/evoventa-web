@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { Fragment, useEffect, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { createPortal } from 'react-dom';
-import classNames from 'classnames';
+import { Fragment, useEffect, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { createPortal } from "react-dom";
+import classNames from "classnames";
 
-export type ModalPositionT = 'left' | 'center' | 'right';
+export type ModalPositionT = "left" | "center" | "right";
 
-export type ModalSizeT = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+export type ModalSizeT = "xsmall" | "small" | "medium" | "large" | "xlarge";
 
 interface ModalProps {
   title?: string;
@@ -20,18 +20,18 @@ interface ModalProps {
 }
 
 const modalSize: Record<ModalSizeT, string> = {
-  xsmall: 'w-[20rem]',
-  small: 'w-[30rem]',
-  medium: 'w-[40rem]',
-  large: 'w-[50rem]',
-  xlarge: 'w-[70rem]',
+  xsmall: "w-[20rem]",
+  small: "w-[30rem]",
+  medium: "w-[40rem]",
+  large: "w-[50rem]",
+  xlarge: "w-[70rem]",
 };
 
 export const Modal = ({
   title,
   open,
-  position = 'center',
-  size = 'medium',
+  position = "center",
+  size = "medium",
   onClose,
   fullHeight = false,
   children,
@@ -46,7 +46,7 @@ export const Modal = ({
 
   return createPortal(
     <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
+      <Dialog as="div" className="relative z-50" onClose={() => onClose?.()}>
         {/* BACKDROP */}
         <Transition.Child
           as={Fragment}
@@ -72,11 +72,11 @@ export const Modal = ({
           >
             <Dialog.Panel
               className={classNames(
-                'bg-white shadow-xl overflow-hidden flex flex-col',
+                "bg-white shadow-xl overflow-hidden flex flex-col",
                 modalSize[size],
-                fullHeight && 'h-screen',
-                position === 'center' && 'rounded-xl',
-                'max-h-screen'
+                fullHeight && "h-screen",
+                position === "center" && "rounded-xl",
+                "max-h-screen",
               )}
             >
               {/* HEADER */}
@@ -84,19 +84,19 @@ export const Modal = ({
                 <div
                   className={`px-6 py-4 border-b flex justify-between items-center font-semibold ${
                     title
-                      ? 'bg-background-secondary text-white'
-                      : 'bg-transparent'
+                      ? "bg-background-secondary text-white"
+                      : "bg-transparent"
                   }`}
                 >
-                  <span>{title ?? ''}</span>
+                  <span>{title ?? ""}</span>
 
                   {onClose && (
                     <button
                       onClick={onClose}
                       className={`${
                         title
-                          ? 'text-white hover:text-gray-300'
-                          : 'text-gray-500 hover:text-gray-800'
+                          ? "text-white hover:text-gray-300"
+                          : "text-gray-500 hover:text-gray-800"
                       }`}
                       aria-label="Cerrar modal"
                     >
@@ -112,6 +112,6 @@ export const Modal = ({
         </div>
       </Dialog>
     </Transition>,
-    document.body
+    document.body,
   );
 };

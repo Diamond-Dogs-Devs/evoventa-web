@@ -1,9 +1,9 @@
-import { isValidElement, cloneElement } from 'react';
-import { toast } from 'react-toastify';
-import type { ReactNode, ReactElement } from 'react';
-import type { ToastOptions } from 'react-toastify';
+import { toast } from "react-toastify";
+import type { ReactNode } from "react";
+import type { ToastOptions } from "react-toastify";
 
-const DEFAULT_TYPE = 'default';
+const DEFAULT_TYPE = "default";
+
 export interface OpenOptions extends ToastOptions {
   content: string | ReactNode;
   showLoading?: boolean;
@@ -19,18 +19,16 @@ export const useToast = () => {
     duration = 3000,
     ...rest
   }: OpenOptions) => {
-    const toastContent = isValidElement(content)
-      ? cloneElement(content as ReactElement, { type })
-      : content;
-
-    return toast(toastContent, {
+    return toast(content, {
       ...rest,
       type,
-      pauseOnHover: pauseOnHover,
+      pauseOnHover,
       hideProgressBar: !showLoading,
-      autoClose: duration ? duration : false,
-      className: 'z-[60]',
-      ...(type === DEFAULT_TYPE && { progressClassName: 'bg-indigo-600' }),
+      autoClose: duration ?? false,
+      className: "z-[60]",
+      ...(type === DEFAULT_TYPE && {
+        progressClassName: "bg-indigo-600",
+      }),
     });
   };
 

@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { FormikValues } from "formik";
+
 import { QrCodeIcon } from "@heroicons/react/24/outline";
 
 import { Layout, Button } from "@/shared/ui";
@@ -10,6 +12,7 @@ import { Pagination } from "@/shared/ui";
 
 import { useProducts, useGlobalBarcodeScan } from "./hooks";
 import { ADD_PRODUCT_FORM_INITIAL_VALUES } from "./utils/constants";
+
 import {
   AddProductModal,
   DeleteProductModal,
@@ -17,6 +20,7 @@ import {
   ProductCard,
   ProductGrid,
 } from "./components";
+
 import { ProductI } from "./types/product.types";
 
 const appConfig = {
@@ -45,12 +49,22 @@ export default function ProductsPage() {
     barcodeLoading,
   } = useProducts();
 
-  const handleOpenCreateModal = (initialValues: ProductI | null) => {
+  const handleOpenCreateModal = (initialValues: FormikValues | null) => {
     open(
       <AddProductModal
         handleCreateProduct={handleCreateProduct}
         close={close}
         initialValues={initialValues}
+      />,
+    );
+  };
+
+  const handleOpenUpdateModal = (values: FormikValues) => {
+    open(
+      <UpdateProductModal
+        handleUpdateProduct={handleUpdateProduct}
+        close={close}
+        values={values}
       />,
     );
   };
@@ -63,16 +77,6 @@ export default function ProductsPage() {
         values={values}
       />,
       { size: "xsmall", fullHeight: false },
-    );
-  };
-
-  const handleOpenUpdateModal = (values: ProductI) => {
-    open(
-      <UpdateProductModal
-        handleUpdateProduct={handleUpdateProduct}
-        close={close}
-        values={values}
-      />,
     );
   };
 
@@ -117,6 +121,7 @@ export default function ProductsPage() {
             Agregar Producto
           </Button>
         </div>
+
         <ProductGrid
           items={products}
           loading={loading}
@@ -133,6 +138,7 @@ export default function ProductsPage() {
             />
           )}
         />
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

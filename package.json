@@ -17,6 +17,7 @@
     "classnames": "^2.5.1",
     "date-fns": "^4.4.0",
     "formik": "^2.4.9",
+    "lodash.debounce": "^4.0.8",
     "moment-timezone": "^0.6.2",
     "next": "16.2.9",
     "react": "19.2.4",
@@ -28,7 +29,9 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
+    "@storybook/react": "^10.4.6",
     "@tailwindcss/postcss": "^4",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

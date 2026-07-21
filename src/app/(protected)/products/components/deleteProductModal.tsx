@@ -1,9 +1,22 @@
-import React from "react";
 import { Button, Heading } from "@/shared/ui";
 
-export const DeleteProductModal = ({ handleDeleteProduct, close, values }) => {
+interface DeleteProductModalProps {
+  handleDeleteProduct: (id: number) => void;
+  close: () => void;
+  values: {
+    id: number;
+    name: string;
+  };
+}
+
+export const DeleteProductModal = ({
+  handleDeleteProduct,
+  close,
+  values,
+}: DeleteProductModalProps) => {
+  const { id, name } = values;
   const handleConfirmDelete = () => {
-    handleDeleteProduct(values.id);
+    handleDeleteProduct(id);
     close();
   };
 
@@ -14,7 +27,7 @@ export const DeleteProductModal = ({ handleDeleteProduct, close, values }) => {
         className="text-error-100 text-center"
       >
         ¿Estás seguro de que quieres{" "}
-        <span className="text-title-caution">ELIMINAR</span> {values.name}?
+        <span className="text-title-caution">ELIMINAR</span> {name}?
       </Heading>
       <div className="flex justify-end mt-14">
         <Button onClick={close} variant="fill" color="primary" className="mr-2">
