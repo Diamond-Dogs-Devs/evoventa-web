@@ -7,9 +7,9 @@ import { OrderI, OrderUserI, OrderClientI } from "../types/order.types";
 
 export const useOrders = () => {
   const { open } = useToast();
-  const { currentPage, pageSize, onPaginationChange } = usePagination();
+  const { currentPage, pageSize, onPaginationChange } = usePagination(10);
 
-  const ordersKey = `/orders`;
+  const ordersKey = `/orders?page=${currentPage}&limit=${pageSize}`;
 
   const { data, loading, error } = useCustomSWR<{
     data: OrderI[];

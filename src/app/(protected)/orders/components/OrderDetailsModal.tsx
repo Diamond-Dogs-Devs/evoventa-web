@@ -5,26 +5,22 @@ import {
   UserIcon,
   CalendarIcon,
   ShoppingBagIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { Button, Heading } from "@/shared/ui";
 import { useOrderDetails } from "../hooks";
 import { OrderI } from "../types/order.types";
+import { getOrderStatusConfig } from "../utils";
 
 interface OrderDetailsModalProps {
   order: OrderI;
   close: () => void;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  PENDING: "bg-yellow-100 !text-yellow-700",
-  COMPLETED: "bg-green-100 !text-green-700",
-  CANCELLED: "bg-red-100 !text-red-600",
-};
-
 export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
-  const statusColor = STATUS_COLORS[order.status] ?? "bg-gray-100 !text-gray-600";
+  const status = getOrderStatusConfig(order.status);
   const createdAt = new Date(order.createdAt).toLocaleString("es-MX");
-  const { items, loading } = useOrderDetails(order.id);
+  const { items, loading, error } = useOrderDetails(order.id);
 
   return (
     <div className="flex flex-col gap-5">
@@ -34,9 +30,9 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
         </Heading>
         <Heading
           variant="body"
-          className={`text-xs font-medium px-2 py-1 rounded-full shrink-0 ${statusColor}`}
+          className={`text-xs font-medium px-2 py-1 rounded-full shrink-0 ${status.badgeClassName}`}
         >
-          {order.status}
+          {status.label}
         </Heading>
       </div>
 
@@ -86,17 +82,31 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
           </Heading>
         </div>
 
-        {loading ? (
+        {loading && (
           <div className="flex flex-col gap-2">
             {Array.from({ length: 2 }).map((_, i) => (
               <div key={i} className="h-10 bg-gray-100 rounded-lg animate-pulse" />
             ))}
           </div>
-        ) : items.length === 0 ? (
+        )}
+
+        {!loading && Boolean(error) && (
+          <div className="flex items-start gap-2 rounded-lg bg-red-50 p-3">
+            <ExclamationTriangleIcon className="h-5 w-5 shrink-0 text-red-500" />
+            <Heading variant="body" className="text-sm !text-red-600">
+              No se pudo cargar el detalle de la orden. Intenta de nuevo más
+              tarde.
+            </Heading>
+          </div>
+        )}
+
+        {!loading && !error && items.length === 0 && (
           <Heading variant="body" className="text-sm !text-gray-400">
             No se encontraron productos para esta orden.
           </Heading>
-        ) : (
+        )}
+
+        {!loading && !error && items.length > 0 && (
           <div className="flex flex-col divide-y divide-gray-100">
             {items.map((item, i) => (
               <div

@@ -7,20 +7,15 @@ import {
 } from "@heroicons/react/24/outline";
 import { Heading } from "@/shared/ui";
 import { OrderI } from "../types/order.types";
+import { getOrderStatusConfig } from "../utils";
 
 interface OrderCardProps {
   order: OrderI;
   onClick?: (order: OrderI) => void;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  PENDING: "bg-yellow-100 !text-yellow-700",
-  COMPLETED: "bg-green-100 !text-green-700",
-  CANCELLED: "bg-red-100 !text-red-600",
-};
-
 export function OrderCard({ order, onClick }: OrderCardProps) {
-  const statusColor = STATUS_COLORS[order.status] ?? "bg-gray-100 !text-gray-600";
+  const status = getOrderStatusConfig(order.status);
   const updatedAt = new Date(order.updatedAt).toLocaleDateString("es-MX");
 
   return (
@@ -34,9 +29,9 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
         </Heading>
         <Heading
           variant="body"
-          className={`text-xs font-medium px-1.5 py-0.5 rounded-full shrink-0 ${statusColor}`}
+          className={`text-xs font-medium px-1.5 py-0.5 rounded-full shrink-0 ${status.badgeClassName}`}
         >
-          {order.status}
+          {status.label}
         </Heading>
       </div>
 
