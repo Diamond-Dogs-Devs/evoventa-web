@@ -8,7 +8,6 @@ import {
   XMarkIcon,
   DocumentDuplicateIcon,
   UserCircleIcon,
-  ShoppingCartIcon,
   ArchiveBoxIcon,
   ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/outline";
@@ -23,7 +22,6 @@ const navigation = [
   { name: "Clients", href: "/clients", icon: DocumentDuplicateIcon },
   { name: "Users", href: "/users", icon: BellIcon },
   { name: "Products", href: "/products", icon: Bars3Icon },
-  { name: "Venta", href: "/sales", icon: ShoppingCartIcon },
   { name: "Inventario", href: "/inventory", icon: ArchiveBoxIcon },
 ];
 
