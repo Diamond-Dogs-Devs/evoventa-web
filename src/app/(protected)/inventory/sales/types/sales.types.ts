@@ -8,7 +8,7 @@ export interface ProductI {
   id: number;
   barcode: string;
   name: string;
-  price: number;
+  salePrice: number;
   brand: string;
   category: string;
   status: string;

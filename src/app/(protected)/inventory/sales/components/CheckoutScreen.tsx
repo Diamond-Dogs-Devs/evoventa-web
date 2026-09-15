@@ -73,7 +73,7 @@ export function CheckoutScreen({
                   {ip.product?.name ?? `#${ip.productId}`} ×{quantity}
                 </Heading>
                 <Heading variant="body" className="!text-inherit">
-                  ${((ip.product?.price ?? 0) * quantity).toFixed(2)}
+                  ${((ip.product?.salePrice ?? 0) * quantity).toFixed(2)}
                 </Heading>
               </div>
             ))}
@@ -142,7 +142,7 @@ export function CheckoutScreen({
           {/* Items */}
           <div className="px-6 py-4 divide-y divide-gray-50">
             {cartItems.map(({ inventoryProduct: ip, quantity }) => {
-              const price = ip.product?.price ?? 0;
+              const salePrice = ip.product?.salePrice ?? 0;
               return (
                 <div
                   key={ip.productId}
@@ -156,12 +156,12 @@ export function CheckoutScreen({
                       {ip.product?.name ?? `Producto #${ip.productId}`}
                     </Heading>
                     <Heading variant="body" className="text-xs !text-gray-400 mt-0.5">
-                      {ip.product?.brand ?? "—"} · ${price.toFixed(2)} c/u
+                      {ip.product?.brand ?? "—"} · ${salePrice.toFixed(2)} c/u
                     </Heading>
                   </div>
                   <div className="text-right shrink-0">
                     <Heading variant="body" className="text-sm font-bold !text-gray-800">
-                      ${(price * quantity).toFixed(2)}
+                      ${(salePrice * quantity).toFixed(2)}
                     </Heading>
                     <Heading variant="body" className="text-xs !text-gray-400">
                       {quantity} unid.

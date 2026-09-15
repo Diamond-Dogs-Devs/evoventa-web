@@ -121,14 +121,14 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
                     {item.name}
                   </Heading>
                   <Heading variant="body" className="text-xs !text-gray-400">
-                    {item.quantity} × ${Number(item.price).toFixed(2)}
+                    {item.quantity} × ${Number(item.salePrice).toFixed(2)}
                   </Heading>
                 </div>
                 <Heading
                   variant="body"
                   className="text-sm font-semibold !text-gray-800 shrink-0"
                 >
-                  ${(Number(item.price) * item.quantity).toFixed(2)}
+                  ${(Number(item.salePrice) * item.quantity).toFixed(2)}
                 </Heading>
               </div>
             ))}

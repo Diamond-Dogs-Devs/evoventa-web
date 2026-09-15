@@ -238,7 +238,7 @@ export function CartPanel({
                   </div>
 
                   <Heading variant="body" className="text-sm font-bold !text-gray-800">
-                    ${((product?.price ?? 0) * quantity).toFixed(2)}
+                    ${((product?.salePrice ?? 0) * quantity).toFixed(2)}
                   </Heading>
                 </div>
 
@@ -246,7 +246,7 @@ export function CartPanel({
                   variant="body"
                   className="text-xs !text-gray-400 mt-1 text-right"
                 >
-                  ${(product?.price ?? 0).toFixed(2)} c/u
+                  ${(product?.salePrice ?? 0).toFixed(2)} c/u
                 </Heading>
               </div>
             );

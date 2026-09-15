@@ -25,7 +25,7 @@ export interface OrderClientI {
 }
 
 export interface OrderLineItemI {
-  price: number;
+  salePrice: number;
   quantity: number;
   productId: string;
   name: string;

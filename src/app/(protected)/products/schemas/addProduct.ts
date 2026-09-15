@@ -7,7 +7,7 @@ export const addProductSchema = Yup.object().shape({
     .max(20, 'El nombre no debe exceder los 20 caracteres')
     .matches(/^[^$%&|<>#]*$/, 'No se permiten caracteres especiales')
     .trim(),
-  price: Yup.number()
+  salePrice: Yup.number()
     .typeError('El precio debe ser un número')
     .positive('El precio debe ser un número positivo')
     .required('El precio es requerido'),

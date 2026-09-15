@@ -44,7 +44,7 @@ const cols = [
   },
   {
     header: "Precio",
-    accessorKey: "price",
+    accessorKey: "salePrice",
     cell: (row: CellContext<RowData, unknown>) => row.getValue(),
   },
 ];

@@ -10,7 +10,7 @@ export interface InventoryI {
 export interface ProductI {
   id: number;
   name: string;
-  price: number;
+  salePrice: number;
   brand: string;
   category: string;
   status: string;

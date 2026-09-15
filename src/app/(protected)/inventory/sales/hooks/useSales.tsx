@@ -224,7 +224,7 @@ export const useSales = (
     () =>
       cartItems.reduce(
         (sum, item) =>
-          sum + (item.inventoryProduct.product?.price ?? 0) * item.quantity,
+          sum + (item.inventoryProduct.product?.salePrice ?? 0) * item.quantity,
         0,
       ),
     [cartItems],
@@ -242,10 +242,12 @@ export const useSales = (
     shouldRetryOnError: false,
   });
 
-  const barcodeProduct: ProductI | null = useMemo(
-    () => barcodeData?.data?.[0] ?? null,
-    [barcodeData],
-  );
+  const barcodeProduct: ProductI | null = useMemo(() => {
+    if (!barcodeSearch) return null;
+    return (
+      barcodeData?.data?.find((p) => p.barcode === barcodeSearch) ?? null
+    );
+  }, [barcodeData, barcodeSearch]);
 
   useEffect(() => {
     if (!barcodeSearch || barcodeLoading) return;
@@ -299,7 +301,7 @@ export const useSales = (
       items: cartItems.map((item) => ({
         productId: item.inventoryProduct.productId,
         quantity: item.quantity,
-        price: item.inventoryProduct.product?.price ?? 0,
+        salePrice: item.inventoryProduct.product?.salePrice ?? 0,
       })),
     });
   };

@@ -74,10 +74,12 @@ export const useInventory = (selectedInventoryId?: number) => {
     revalidateOnFocus: false,
     shouldRetryOnError: false,
   });
-  const barcodeProduct: ProductI | null = useMemo(
-    () => barcodeData?.data?.[0] ?? null,
-    [barcodeData],
-  );
+  const barcodeProduct: ProductI | null = useMemo(() => {
+    if (!barcodeSearch) return null;
+    return (
+      barcodeData?.data?.find((p) => p.barcode === barcodeSearch) ?? null
+    );
+  }, [barcodeData, barcodeSearch]);
 
   const {
     post: postInventory,
@@ -172,11 +174,11 @@ export const useInventory = (selectedInventoryId?: number) => {
       {
         header: "Precio",
         accessorKey: "productId",
-        id: "price",
+        id: "salePrice",
         cell: ({ getValue }) => {
-          const price = productMap[String(getValue())]?.price;
-          return price != null
-            ? `$${Number(price).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
+          const salePrice = productMap[String(getValue())]?.salePrice;
+          return salePrice != null
+            ? `$${Number(salePrice).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
             : "—";
         },
       },

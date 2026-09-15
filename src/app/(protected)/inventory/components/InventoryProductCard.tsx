@@ -74,8 +74,8 @@ export function InventoryProductCard({
 
       <div className="pt-2 border-t border-gray-100">
         <span className="font-bold text-base text-gray-900">
-          {product?.price != null
-            ? `$${Number(product.price).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
+          {product?.salePrice != null
+            ? `$${Number(product.salePrice).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
             : "—"}
         </span>
       </div>

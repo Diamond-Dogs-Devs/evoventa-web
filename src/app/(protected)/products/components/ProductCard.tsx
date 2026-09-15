@@ -68,7 +68,7 @@ export function ProductCard({
 
       <div className="pt-2 border-t border-gray-100 mt-1">
         <span className="font-bold text-base text-gray-900">
-          ${Number(product.price).toFixed(2)}
+          ${Number(product.salePrice).toFixed(2)}
         </span>
       </div>
 
