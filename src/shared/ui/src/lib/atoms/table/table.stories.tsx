@@ -7,7 +7,7 @@ interface RowData {
   depa: string;
   bedrooms: number;
   bathrooms: number;
-  salePrice: string;
+  price: string;
   state: string;
 }
 
