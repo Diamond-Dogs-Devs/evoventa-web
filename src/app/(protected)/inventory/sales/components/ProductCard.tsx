@@ -76,7 +76,7 @@ export function ProductCard({
 
       <div className="flex items-center justify-between mt-1">
         <Heading variant="body" className="font-bold text-base !text-gray-900">
-          ${(ip.product?.price ?? 0).toFixed(2)}
+          ${(ip.product?.salePrice ?? 0).toFixed(2)}
         </Heading>
         <Button
           type="button"

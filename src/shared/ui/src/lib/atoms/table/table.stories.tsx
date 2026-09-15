@@ -7,7 +7,7 @@ interface RowData {
   depa: string;
   bedrooms: number;
   bathrooms: number;
-  price: string;
+  salePrice: string;
   state: string;
 }
 
@@ -44,7 +44,7 @@ const cols = [
   },
   {
     header: "Precio",
-    accessorKey: "price",
+    accessorKey: "salePrice",
     cell: (row: CellContext<RowData, unknown>) => row.getValue(),
   },
 ];

@@ -1,7 +1,7 @@
 export interface ProductI {
   id: number;
   name: string;
-  price: number;
+  salePrice: number;
   available: boolean;
   createdAt: string;
   updatedAt: string;

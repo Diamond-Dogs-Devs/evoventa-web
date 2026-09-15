@@ -8,8 +8,10 @@ import {
   InputAmount,
   BarcodeInput,
   InputImageFormik,
+  SelectFormik,
 } from "@/shared/ui";
 import { addProductSchema } from "../schemas/addProduct";
+import { PRODUCT_STATUS_OPTIONS } from "../utils/constants";
 
 interface UpdateProductModalProps {
   handleUpdateProduct: (values: FormikValues) => void | Promise<void>;
@@ -24,7 +26,7 @@ export const UpdateProductModal = ({
 }: UpdateProductModalProps) => {
   const ADD_PRODUCT_FORM_INITIAL_VALUES = {
     name: values.name || "",
-    price: values.price || 0,
+    salePrice: values.salePrice || 0,
     barcode: values.barcode || "",
     id: values.id || null,
     brand: values.brand || "",
@@ -53,7 +55,7 @@ export const UpdateProductModal = ({
               />
               <InputAmount
                 label="Precio del producto"
-                name="price"
+                name="salePrice"
                 currency="MX"
                 type="number"
               />
@@ -72,10 +74,10 @@ export const UpdateProductModal = ({
                 name="category"
                 type="text"
               />
-              <InputFormik
+              <SelectFormik
                 label="Status del producto"
                 name="status"
-                type="text"
+                options={PRODUCT_STATUS_OPTIONS}
               />
               <InputImageFormik name="image" label="Imagen del producto" />
             </div>

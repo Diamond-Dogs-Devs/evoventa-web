@@ -14,7 +14,10 @@ import {
 } from "@/shared/ui";
 
 import { addProductSchema } from "../schemas/addProduct";
-import { ADD_PRODUCT_FORM_INITIAL_VALUES } from "../utils/constants";
+import {
+  ADD_PRODUCT_FORM_INITIAL_VALUES,
+  PRODUCT_STATUS_OPTIONS,
+} from "../utils/constants";
 
 type Props = {
   handleCreateProduct: (values: FormikValues) => void;
@@ -50,7 +53,7 @@ export const AddProductModal = ({
 
               <InputAmount
                 label="Precio del producto"
-                name="price"
+                name="salePrice"
                 currency="MX"
                 type="number"
               />
@@ -76,11 +79,7 @@ export const AddProductModal = ({
               <SelectFormik
                 label="Status del producto"
                 name="status"
-                options={[
-                  { value: "", label: "Selecciona un status" },
-                  { value: "AVAILABLE", label: "Disponible" },
-                  { value: "UNAVAILABLE", label: "No disponible" },
-                ]}
+                options={PRODUCT_STATUS_OPTIONS}
               />
 
               <InputImageFormik name="image" label="Imagen del producto" />

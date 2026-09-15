@@ -46,10 +46,12 @@ export const useProducts = () => {
     shouldRetryOnError: false,
   });
 
-  const barcodeProduct: ProductI | null = useMemo(
-    () => barcodeData?.data?.[0] ?? null,
-    [barcodeData],
-  );
+  const barcodeProduct: ProductI | null = useMemo(() => {
+    if (!barcodeSearch) return null;
+    return (
+      barcodeData?.data?.find((p) => p.barcode === barcodeSearch) ?? null
+    );
+  }, [barcodeData, barcodeSearch]);
 
   const {
     post,
@@ -99,7 +101,7 @@ export const useProducts = () => {
 
     post({
       name: values.name,
-      price: values.price,
+      salePrice: values.salePrice,
       barcode: values.barcode,
       brand: values.brand,
       category: values.category,
@@ -127,7 +129,7 @@ export const useProducts = () => {
 
     patch(`/products/${id}`, {
       name: values.name,
-      price: values.price,
+      salePrice: values.salePrice,
       barcode: values.barcode,
       brand: values.brand,
       category: values.category,
