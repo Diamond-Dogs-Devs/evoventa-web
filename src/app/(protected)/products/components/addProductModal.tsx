@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Form, Formik, FormikValues } from "formik";
 
 import {
@@ -11,6 +11,7 @@ import {
   InputImageFormik,
   BarcodeInput,
   SelectFormik,
+  Switch,
 } from "@/shared/ui";
 
 import { addProductSchema } from "../schemas/addProduct";
@@ -31,6 +32,7 @@ export const AddProductModal = ({
   initialValues = null,
 }: Props) => {
   const formInitialValues = initialValues ?? ADD_PRODUCT_FORM_INITIAL_VALUES;
+  const [useScanner, setUseScanner] = useState(true);
 
   return (
     <Formik
@@ -52,16 +54,39 @@ export const AddProductModal = ({
               />
 
               <InputAmount
-                label="Precio del producto"
+                label="Precio de venta"
                 name="salePrice"
                 currency="MX"
                 type="number"
               />
 
-              <BarcodeInput
-                label="Escanea un producto"
-                name="barcode"
-                type="text"
+              <InputAmount
+                label="Precio de compra"
+                name="purchasePrice"
+                currency="MX"
+                type="number"
+              />
+
+              {useScanner ? (
+                <BarcodeInput
+                  label="Escanea un producto"
+                  name="barcode"
+                  type="text"
+                />
+              ) : (
+                <InputFormik
+                  label="Código de barras"
+                  name="barcode"
+                  type="text"
+                  placeholder="Escribe el código de barras"
+                />
+              )}
+
+              <Switch
+                id="useScannerAdd"
+                label="¿Ingresar con lector de código de barras?"
+                isChecked={useScanner}
+                onChange={setUseScanner}
               />
 
               <InputFormik

@@ -12,4 +12,5 @@ export { default as Heading } from "./lib/atoms/heading/heading";
 export { default as CardSecondary } from "./lib/atoms/card/cardSecondary";
 export { default as InputImageFormik } from "./lib/atoms/inputImageFormik/InputImageFormik";
 export { default as Pagination } from "./lib/atoms/pagination/pagination";
+export { default as Switch } from "./lib/atoms/switch/Switch";
 export type { ModalPositionT, ModalSizeT } from "./lib/molecules/modal/modal";

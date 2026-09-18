@@ -102,6 +102,7 @@ export const useProducts = () => {
     post({
       name: values.name,
       salePrice: values.salePrice,
+      purchasePrice: values.purchasePrice,
       barcode: values.barcode,
       brand: values.brand,
       category: values.category,
@@ -130,6 +131,7 @@ export const useProducts = () => {
     patch(`/products/${id}`, {
       name: values.name,
       salePrice: values.salePrice,
+      purchasePrice: values.purchasePrice,
       barcode: values.barcode,
       brand: values.brand,
       category: values.category,
