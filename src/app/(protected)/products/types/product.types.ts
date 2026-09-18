@@ -2,6 +2,7 @@ export interface ProductI {
   id: number;
   name: string;
   salePrice: number;
+  purchasePrice: number;
   available: boolean;
   createdAt: string;
   updatedAt: string;

@@ -11,6 +11,10 @@ export const addProductSchema = Yup.object().shape({
     .typeError('El precio debe ser un número')
     .positive('El precio debe ser un número positivo')
     .required('El precio es requerido'),
+  purchasePrice: Yup.number()
+    .typeError('El precio de compra debe ser un número')
+    .min(0, 'El precio de compra no puede ser negativo')
+    .required('El precio de compra es requerido'),
   barcode: Yup.string()
     .required('El código de barras es requerido'),
   brand: Yup.string()
@@ -24,7 +28,7 @@ export const addProductSchema = Yup.object().shape({
   status: Yup.string()
     .required('El estado es requerido')
     .oneOf(
-      ['AVAILABLE', 'DISCONTINUED'],
+      ['AVAILABLE', 'UNAVAILABLE'],
       'El estado debe ser disponible o no disponible'
     ),
 });

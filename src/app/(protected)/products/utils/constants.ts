@@ -7,6 +7,7 @@ export const PRODUCT_STATUS_OPTIONS = [
 export const ADD_PRODUCT_FORM_INITIAL_VALUES = {
   name: "",
   salePrice: 0,
+  purchasePrice: 0,
   barcode: "",
   brand: "",
   category: "",
