@@ -5,7 +5,7 @@ import { Button, InputFormik, Card } from "@/shared/ui";
 import { loginSchema } from "./schemas/login";
 
 export default function LoginPage() {
-  const { login, mutationLoading } = useAuth();
+  const { login, isLoading } = useAuth();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2">
@@ -55,7 +55,7 @@ export default function LoginPage() {
                     type="submit"
                     color="primary"
                     variant="fill"
-                    disabled={mutationLoading}
+                    disabled={isLoading}
                     id="button"
                   >
                     Iniciar sesión
