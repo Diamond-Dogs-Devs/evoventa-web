@@ -6,6 +6,7 @@ import { useModal } from "@/shared/providers";
 import { useUsers } from "./hooks";
 import { AddUserModal, DeleteUserModal, UpdateUserModal } from "./components";
 import { UserI } from "./types/user.types";
+import Page from "@/shared/components/Page";
 
 const appConfig = {
   title: "Usuarios",
@@ -31,13 +32,9 @@ export default function UsersPage() {
   } = useUsers();
 
   const handleOpenCreateModal = () => {
-    open(
-      <AddUserModal 
-        handleCreateUser={handleCreateUser}
-        close={close}
-      />,
-      { fullHeight: false },
-    );
+    open(<AddUserModal handleCreateUser={handleCreateUser} close={close} />, {
+      fullHeight: false,
+    });
   };
 
   const handleOpenEditModal = (values: UserI) => {
@@ -47,7 +44,7 @@ export default function UsersPage() {
         close={close}
         values={values}
       />,
-      { fullHeight: false },
+      { fullHeight: false }
     );
   };
 
@@ -58,12 +55,12 @@ export default function UsersPage() {
         close={close}
         values={values}
       />,
-      { size: "xsmall", fullHeight: false },
+      { size: "xsmall", fullHeight: false }
     );
   };
 
   return (
-    <Layout appConfig={appConfig}>
+    <Page title={appConfig.title}>
       <div className="h-screen w-full">
         <div className="flex justify-end mt-2">
           <Button
@@ -103,6 +100,6 @@ export default function UsersPage() {
           </div>
         )}
       </div>
-    </Layout>
+    </Page>
   );
 }

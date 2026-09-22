@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useSales } from "./hooks";
 import { CartPanel, ProductGrid, CheckoutScreen } from "./components";
+import Page from "@/shared/components/Page";
 
 const appConfig = {
   title: "Nueva Venta",
@@ -50,7 +51,7 @@ export default function SalesPage() {
 
   if (step === "checkout") {
     return (
-      <Layout appConfig={{ ...appConfig, title: "Confirmar Venta" }}>
+      <Page title="Confirmar venta">
         <CheckoutScreen
           cartItems={cartItems}
           selectedClient={selectedClient}
@@ -59,7 +60,7 @@ export default function SalesPage() {
           onConfirm={handleCreateOrder}
           onBack={() => setStep("sale")}
         />
-      </Layout>
+      </Page>
     );
   }
 
@@ -108,14 +109,20 @@ export default function SalesPage() {
               </Heading>
             )}
           </div>
-          <Heading variant="body" className="font-semibold text-sm !text-title-light">
+          <Heading
+            variant="body"
+            className="font-semibold text-sm !text-title-light"
+          >
             {totalItems === 0
               ? "Carrito vacío"
               : `${totalItems} producto${totalItems !== 1 ? "s" : ""}`}
           </Heading>
         </div>
         <div className="flex items-center gap-2">
-          <Heading variant="body" className="font-bold text-lg !text-title-light">
+          <Heading
+            variant="body"
+            className="font-bold text-lg !text-title-light"
+          >
             ${total.toFixed(2)}
           </Heading>
           <ChevronRightIcon className="h-5 w-5" />
@@ -125,7 +132,7 @@ export default function SalesPage() {
   );
 
   return (
-    <Layout appConfig={appConfig}>
+    <Page title={appConfig.title}>
       <div className="flex flex-col gap-3 h-[calc(100vh-6rem)]">
         <Button
           type="button"
@@ -158,6 +165,6 @@ export default function SalesPage() {
           {mobileCart}
         </div>
       </div>
-    </Layout>
+    </Page>
   );
 }

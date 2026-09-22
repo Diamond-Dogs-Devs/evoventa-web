@@ -1,3 +1,4 @@
+"use client";
 import cn from "classnames";
 import { useField } from "formik";
 import { type FC, type InputHTMLAttributes, useRef, useState } from "react";
@@ -35,14 +36,14 @@ const InputAmount: FC<InputProps & InputHTMLAttributes<HTMLInputElement>> = ({
     "w-full cursor-default py-1.5 pl-10 pr-3 rounded-3xl border border-light-gray-400 text-left bg-transparent flex items-center",
     {
       "!bg-gray-50 cursor-not-allowed": props.disabled,
-    },
+    }
   );
 
   const inputClassName = cn(
     "w-full bg-transparent border-none text-right outline-none focus:outline-none focus:ring-0 focus:border-transparent appearance-none",
     {
       "cursor-not-allowed": props.disabled,
-    },
+    }
   );
 
   const labelClassName = cn(
@@ -50,7 +51,7 @@ const InputAmount: FC<InputProps & InputHTMLAttributes<HTMLInputElement>> = ({
     {
       "!-translate-y-1 !bg-transparent": isActive,
       "!backdrop-blur-xl px-2": !isActive,
-    },
+    }
   );
 
   const valueCurrency: Record<Currency, string> = {

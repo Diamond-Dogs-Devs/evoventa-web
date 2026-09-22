@@ -22,6 +22,7 @@ import {
 } from "./components";
 
 import { ProductI } from "./types/product.types";
+import Page from "@/shared/components/Page";
 
 const appConfig = {
   title: "Productos",
@@ -55,7 +56,7 @@ export default function ProductsPage() {
         handleCreateProduct={handleCreateProduct}
         close={close}
         initialValues={initialValues}
-      />,
+      />
     );
   };
 
@@ -65,7 +66,7 @@ export default function ProductsPage() {
         handleUpdateProduct={handleUpdateProduct}
         close={close}
         values={values}
-      />,
+      />
     );
   };
 
@@ -76,7 +77,7 @@ export default function ProductsPage() {
         close={close}
         values={values}
       />,
-      { size: "xsmall", fullHeight: false },
+      { size: "xsmall", fullHeight: false }
     );
   };
 
@@ -98,7 +99,7 @@ export default function ProductsPage() {
   useGlobalBarcodeScan(setBarcodeSearch);
 
   return (
-    <Layout appConfig={appConfig}>
+    <Page title={appConfig.title}>
       <div className="flex flex-col gap-4 min-h-[calc(100vh-10rem)]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -148,6 +149,6 @@ export default function ProductsPage() {
           pageSizeOptions={[10, 20, 50]}
         />
       </div>
-    </Layout>
+    </Page>
   );
 }

@@ -1,7 +1,8 @@
-import cn from 'classnames';
-import Image from 'next/image';
-import { useField, useFormikContext } from 'formik';
-import { ChangeEvent, FC, InputHTMLAttributes, useMemo, useState } from 'react';
+"use client";
+import cn from "classnames";
+import Image from "next/image";
+import { useField, useFormikContext } from "formik";
+import { ChangeEvent, FC, InputHTMLAttributes, useMemo, useState } from "react";
 
 interface InputImageFormikProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -12,7 +13,7 @@ interface InputImageFormikProps extends InputHTMLAttributes<HTMLInputElement> {
 const InputImageFormik: FC<InputImageFormikProps> = ({
   name,
   label,
-  className = '',
+  className = "",
   ...props
 }) => {
   const [field, { error, touched }] = useField(name);
@@ -25,7 +26,7 @@ const InputImageFormik: FC<InputImageFormikProps> = ({
   const preview = useMemo(() => {
     if (!field.value) return null;
 
-    if (typeof field.value === 'string') {
+    if (typeof field.value === "string") {
       return field.value;
     }
 
@@ -60,18 +61,18 @@ const InputImageFormik: FC<InputImageFormikProps> = ({
   };
 
   const containerClassName = cn(
-    'w-full border border-light-gray-400 rounded-3xl p-4 transition-all duration-200 bg-transparent',
+    "w-full border border-light-gray-400 rounded-3xl p-4 transition-all duration-200 bg-transparent",
     {
-      '!border-primary-500 shadow-sm': focus || dragging,
+      "!border-primary-500 shadow-sm": focus || dragging,
     },
     className
   );
 
   const labelClassName = cn(
-    'ease-in duration-100 ml-4 translate-y-2 w-fit text-sm text-primary-600 font-normal',
+    "ease-in duration-100 ml-4 translate-y-2 w-fit text-sm text-primary-600 font-normal",
     {
-      '!-translate-y-1 !bg-transparent': focus || preview,
-      '!backdrop-blur-xl px-2': !focus && !preview,
+      "!-translate-y-1 !bg-transparent": focus || preview,
+      "!backdrop-blur-xl px-2": !focus && !preview,
     }
   );
 
@@ -93,9 +94,9 @@ const InputImageFormik: FC<InputImageFormikProps> = ({
               onDragLeave={() => setDragging(false)}
               onDrop={handleDrop}
               className={cn(
-                'flex flex-col items-center justify-center gap-4 border-2 border-dashed border-light-gray-400 rounded-2xl p-6 cursor-pointer transition-all duration-200',
+                "flex flex-col items-center justify-center gap-4 border-2 border-dashed border-light-gray-400 rounded-2xl p-6 cursor-pointer transition-all duration-200",
                 {
-                  'border-primary-500 bg-primary-50': focus || dragging,
+                  "border-primary-500 bg-primary-50": focus || dragging,
                 }
               )}
             >

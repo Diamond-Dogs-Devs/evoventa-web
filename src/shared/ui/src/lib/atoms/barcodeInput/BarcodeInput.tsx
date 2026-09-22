@@ -1,12 +1,11 @@
+"use client";
 import cn from "classnames";
 import { useField } from "formik";
 import { FC, InputHTMLAttributes, ReactNode, useRef, useState } from "react";
 import { Spinner } from "../spinner/spinner";
 
-interface BarcodeInputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "onChange"
-> {
+interface BarcodeInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   name: string;
   className?: string;
   prefix?: string;
@@ -47,7 +46,7 @@ const BarcodeInput: FC<
       "!pr-10": !!suffix || loading,
       "!bg-gray-50 cursor-not-allowed": props.disabled,
     },
-    className,
+    className
   );
 
   const inputClassName = cn(
@@ -56,7 +55,7 @@ const BarcodeInput: FC<
     "active:bg-transparent disabled:bg-transparent",
     {
       "cursor-not-allowed": props.disabled,
-    },
+    }
   );
 
   const labelClassName = cn(
@@ -64,7 +63,7 @@ const BarcodeInput: FC<
     {
       "!-translate-y-1 !bg-transparent": focus,
       "!backdrop-blur-xl px-2": !focus,
-    },
+    }
   );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

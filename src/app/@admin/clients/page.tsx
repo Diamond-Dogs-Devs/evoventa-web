@@ -10,6 +10,7 @@ import {
   UpdateClientModal,
 } from "./components";
 import { ClientI } from "./types/client.types";
+import Page from "@/shared/components/Page";
 
 const appConfig = {
   title: "Clientes",
@@ -36,11 +37,8 @@ export default function ClientsPage() {
 
   const handleOpenCreateModal = () => {
     open(
-      <AddClientModal
-        handleCreateClient={handleCreateClient}
-        close={close}
-      />,
-      { fullHeight: false },
+      <AddClientModal handleCreateClient={handleCreateClient} close={close} />,
+      { fullHeight: false }
     );
   };
 
@@ -51,7 +49,7 @@ export default function ClientsPage() {
         close={close}
         values={values}
       />,
-      { fullHeight: false },
+      { fullHeight: false }
     );
   };
 
@@ -62,12 +60,12 @@ export default function ClientsPage() {
         close={close}
         values={values}
       />,
-      { size: "xsmall", fullHeight: false },
+      { size: "xsmall", fullHeight: false }
     );
   };
 
   return (
-    <Layout appConfig={appConfig}>
+    <Page title={appConfig.title}>
       <div className="h-screen w-full">
         <div className="flex justify-end mt-2">
           <Button
@@ -107,6 +105,6 @@ export default function ClientsPage() {
           </div>
         )}
       </div>
-    </Layout>
+    </Page>
   );
 }

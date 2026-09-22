@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Layout, Button, Heading } from "@/shared/ui";
+import { Button, Heading } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 import { PlusCircleIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 
@@ -13,10 +13,11 @@ import {
   DeleteInventoryProductModal,
   EditInventoryProductModal,
   InventoryList,
-  InventoryRightPanel,
   ProductNotFoundModal,
 } from "./components";
 import { InventoryI, InventoryProductI } from "./types/inventory.types";
+import { InventoryRightPanel } from "./view/InventoryRightPanel";
+import Page from "@/shared/components/Page";
 
 const appConfig = {
   title: "Inventario",
@@ -25,8 +26,9 @@ const appConfig = {
 
 export default function InventoryPage() {
   const { open, close } = useModal();
-  const [selectedInventory, setSelectedInventory] =
-    useState<InventoryI | null>(null);
+  const [selectedInventory, setSelectedInventory] = useState<InventoryI | null>(
+    null
+  );
 
   const {
     inventories,
@@ -63,7 +65,7 @@ export default function InventoryPage() {
     }
 
     const existingItem = inventoryProducts.find(
-      (ip) => ip.productId === barcodeProduct.id,
+      (ip) => ip.productId === barcodeProduct.id
     );
 
     if (existingItem) {
@@ -73,7 +75,7 @@ export default function InventoryPage() {
           handleEditInventoryProduct={handleEditInventoryProduct}
           close={close}
         />,
-        { title: "Editar producto", size: "xsmall", fullHeight: false },
+        { title: "Editar producto", size: "xsmall", fullHeight: false }
       );
     } else {
       open(
@@ -84,7 +86,7 @@ export default function InventoryPage() {
           inventoryName={selectedInventory?.name ?? ""}
           initialProductId={String(barcodeProduct.id)}
         />,
-        { size: "medium", fullHeight: false },
+        { size: "medium", fullHeight: false }
       );
     }
 
@@ -99,7 +101,7 @@ export default function InventoryPage() {
         close={close}
         allProducts={allProducts}
       />,
-      { size: "medium", fullHeight: false },
+      { size: "medium", fullHeight: false }
     );
   };
 
@@ -112,7 +114,7 @@ export default function InventoryPage() {
         allProducts={allProducts}
         inventoryName={selectedInventory.name}
       />,
-      { size: "medium", fullHeight: false },
+      { size: "medium", fullHeight: false }
     );
   };
 
@@ -123,7 +125,7 @@ export default function InventoryPage() {
         close={close}
         values={values}
       />,
-      { size: "xsmall", fullHeight: false },
+      { size: "xsmall", fullHeight: false }
     );
   };
 
@@ -134,18 +136,18 @@ export default function InventoryPage() {
         close={close}
         values={values}
       />,
-      { size: "xsmall", fullHeight: false },
+      { size: "xsmall", fullHeight: false }
     );
   };
 
   const inventoryProductsFormatted: InventoryProductI[] = Array.isArray(
-    inventoryProducts,
+    inventoryProducts
   )
     ? inventoryProducts
     : [];
 
   return (
-    <Layout appConfig={appConfig}>
+    <Page title={appConfig.title}>
       <div className="flex flex-col gap-4 lg:hidden pt-2">
         <div className="flex items-center gap-2">
           <div className="flex-1 overflow-x-auto">
@@ -200,7 +202,7 @@ export default function InventoryPage() {
       >
         <div className="w-72 shrink-0 flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <Heading variant="sectionHeadingCard">Inventarios</Heading>
+            <Heading variant="sectionHeadingCard">Categorías</Heading>
             <Button
               type="button"
               variant="fill"
@@ -238,6 +240,6 @@ export default function InventoryPage() {
           />
         </div>
       </div>
-    </Layout>
+    </Page>
   );
 }
