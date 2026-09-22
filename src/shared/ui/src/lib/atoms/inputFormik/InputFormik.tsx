@@ -1,3 +1,4 @@
+"use client";
 import cn from "classnames";
 import { useField } from "formik";
 import { FC, InputHTMLAttributes, ReactNode, useState } from "react";
@@ -42,7 +43,7 @@ const InputFormik: FC<InputProps & InputHTMLAttributes<HTMLInputElement>> = ({
       "!pr-10": !!suffix || loading,
       "!bg-gray-50 cursor-not-allowed": props.disabled,
     },
-    className,
+    className
   );
 
   const inputClassName = cn(
@@ -51,7 +52,7 @@ const InputFormik: FC<InputProps & InputHTMLAttributes<HTMLInputElement>> = ({
     "active:bg-transparent disabled:bg-transparent",
     {
       "cursor-not-allowed": props.disabled,
-    },
+    }
   );
 
   const labelClassName = cn(
@@ -59,7 +60,7 @@ const InputFormik: FC<InputProps & InputHTMLAttributes<HTMLInputElement>> = ({
     {
       "!-translate-y-1 !bg-transparent": focus,
       "!backdrop-blur-xl px-2": !focus,
-    },
+    }
   );
 
   const handleFocus = () => {

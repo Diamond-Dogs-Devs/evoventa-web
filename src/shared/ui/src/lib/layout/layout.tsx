@@ -1,3 +1,4 @@
+"use client";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
@@ -13,11 +14,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/shared/providers";
 
-import Heading from "../atoms/heading/heading";
 import Button from "../atoms/button/button";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 const navigation = [
-  { name: "Admin", href: "/admin", icon: BuildingLibraryIcon },
+  { name: "Inicio", href: "/", icon: BuildingLibraryIcon },
   { name: "Orders", href: "/orders", icon: CalendarIcon },
   { name: "Clients", href: "/clients", icon: DocumentDuplicateIcon },
   { name: "Users", href: "/users", icon: BellIcon },
@@ -29,12 +31,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-/* eslint-disable-next-line */
 export interface LayoutProps {
-  appConfig: {
-    title: string;
-    currentPath: string;
-  };
   children?: React.ReactNode;
 }
 
@@ -42,7 +39,8 @@ export function Layout(props: LayoutProps) {
   const { logout } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { appConfig, children } = props;
+  const { children } = props;
+  const path = usePathname();
 
   return (
     <div>
@@ -107,15 +105,13 @@ export function Layout(props: LayoutProps) {
                     <ul className="-mx-2 flex-1 space-y-1">
                       {navigation.map((item) => (
                         <li key={item.name}>
-                          <button
-                            onClick={() => {
-                              window.location.href = item.href;
-                            }}
+                          <Link
+                            href={item.href}
                             className={classNames(
-                              item.href === appConfig.currentPath
+                              item.href === path
                                 ? "bg-gray-800 text-white"
                                 : "text-gray-400 hover:text-white hover:bg-gray-800",
-                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
+                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                             )}
                           >
                             <item.icon
@@ -123,7 +119,7 @@ export function Layout(props: LayoutProps) {
                               aria-hidden="true"
                             />
                             {item.name}
-                          </button>
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -132,7 +128,7 @@ export function Layout(props: LayoutProps) {
                       variant="fill"
                       color="secondary"
                       onClick={logout}
-                      className="block text-left "
+                      className="block text-left cursor-pointer"
                     >
                       <ArrowLeftEndOnRectangleIcon className="h-5 w-5 inline-block mr-1" />{" "}
                       Cerrar Sesión
@@ -144,8 +140,6 @@ export function Layout(props: LayoutProps) {
           </div>
         </Dialog>
       </Transition.Root>
-
-      {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:flex lg:flex-col lg:w-20 lg:bg-gray-900 lg:pb-4">
         <div className="text-white flex h-16 shrink-0 items-center justify-center text-white">
           Logo
@@ -154,20 +148,20 @@ export function Layout(props: LayoutProps) {
           <ul className="flex flex-col items-center space-y-1">
             {navigation.map((item) => (
               <li key={item.name}>
-                <a
+                <Link
                   href={item.href}
                   className={classNames(
-                    item.href === appConfig.currentPath
+                    item.href === path
                       ? "bg-gray-800 text-white"
                       : "text-gray-400 hover:text-white hover:bg-gray-800",
-                    "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold relative duration-300",
+                    "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold relative duration-300"
                   )}
                 >
                   <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
                   <span className="absolute hidden group-hover:flex top-2 -right-3 translate-x-full w-auto px-2 py-1 bg-gray-700 rounded-lg text-center text-white text-sm before:content-[''] before:absolute before:top-1/2  before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700">
                     {item.name}
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -193,7 +187,7 @@ export function Layout(props: LayoutProps) {
                 </a>
                 <button
                   onClick={logout}
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                 >
                   Cerrar Sesión
                 </button>
@@ -225,15 +219,8 @@ export function Layout(props: LayoutProps) {
             Logo
           </div>
         </div>
-        <main className="">
-          <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6 bg-ghost-blue-400">
-            {/* Main area */}
-            {/* <h1 className="font-bold">{appConfig.title} </h1> */}
-            <Heading className="mb-2">{appConfig.title}</Heading>
-            <div>{children}</div>
-          </div>
-        </main>
       </div>
+      {children}
     </div>
   );
 }

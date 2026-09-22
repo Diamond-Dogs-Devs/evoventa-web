@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
@@ -16,9 +16,10 @@ import {
   ApiError,
   AuthProviderProps,
 } from "../types/auth.types";
+import { AuthController } from "@/shared/services/auth/AuthController";
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const router = useRouter();
+  const { push, refresh } = useRouter();
   const { open } = useToast();
 
   const [user, setUser] = useState<User | null>(() => {
@@ -33,45 +34,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   });
 
-  const { post: mutateLogin, loading: mutationLoading } = useCustomMutation<
-    LoginResponse,
-    AxiosError<ApiError>
-  >({
-    url: "/auth/login",
-
-    onError: (error) => {
+  const login = async ({ email, password }: LoginValues) => {
+    try {
+      const authController = new AuthController();
+      const { token, user } = await authController.loginUser(email, password);
+      setUser(user);
+      //TODO: Delete localstorage for security
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      push("/");
+      refresh();
+    } catch (e) {
       open({
         type: "error",
         content: (
           <ToastContent
             title="Error"
-            subtitle={
-              error.response?.data?.message || "Error al iniciar sesión"
-            }
+            subtitle={e?.response?.data?.message || "Error al iniciar sesión"}
           />
         ),
       });
-    },
+    }
+  };
 
-    onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      setUser(data.user);
-
-      router.replace("/products");
-    },
-  });
-
-  const login = (values: LoginValues) => mutateLogin(values);
-
-  const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-
-    setUser(null);
-
-    router.replace("/");
+  const logout = async () => {
+    const authController = new AuthController();
+    const isOuted = await authController.logoutUser();
+    if (isOuted) {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      setUser(null);
+      push("/");
+      refresh();
+    }
   };
 
   return (
@@ -79,7 +74,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         user,
         role: user?.role,
-        mutationLoading,
         login,
         logout,
       }}

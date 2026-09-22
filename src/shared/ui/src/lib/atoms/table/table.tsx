@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
@@ -117,7 +118,7 @@ export function Table<T extends object>({
 
       return array.slice(pageIndex - 2, pageIndex + 3);
     },
-    [table],
+    [table]
   );
 
   const handleClick = (row: Row<any>) => {
@@ -170,7 +171,7 @@ export function Table<T extends object>({
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                           {{
                             asc: (
@@ -211,8 +212,8 @@ export function Table<T extends object>({
                 row.depth === 0 && !row.subRows?.length
                   ? "bg-white border-t-4"
                   : row.subRows?.length
-                    ? "bg-light-gray-600"
-                    : "bg-light-gray-200";
+                  ? "bg-light-gray-600"
+                  : "bg-light-gray-200";
 
               const tdBgGroup =
                 !row.depth && row.subRows?.length
@@ -222,7 +223,7 @@ export function Table<T extends object>({
               const rowClassNames = classNames(
                 trBgGroup,
                 "shadow text-center border-t-4 border-ghost-blue-300 rounded-lg",
-                rowClassName ? rowClassName(row) : "",
+                rowClassName ? rowClassName(row) : ""
               );
 
               return (
@@ -269,8 +270,8 @@ export function Table<T extends object>({
                               ? "cursor-pointer"
                               : ""
                             : path(row)
-                              ? "cursor-pointer"
-                              : ""
+                            ? "cursor-pointer"
+                            : ""
                         } ${tdBgGroup}`}
                       >
                         <div
@@ -279,14 +280,14 @@ export function Table<T extends object>({
                               ? row.original.status === "AVAILABLE"
                                 ? "text-green-500 font-bold bg-green-100 rounded-full w-max px-2 py-1"
                                 : row.original.status === "UNAVAILABLE"
-                                  ? "text-red-500 font-bold"
-                                  : "text-gray-500 font-bold"
+                                ? "text-red-500 font-bold"
+                                : "text-gray-500 font-bold"
                               : "" // <-- Deja las demás columnas sin estos colores
                           }
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext(),
+                            cell.getContext()
                           )}
                         </div>
                       </td>

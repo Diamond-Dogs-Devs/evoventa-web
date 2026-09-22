@@ -5,34 +5,19 @@ import {
   MagnifyingGlassIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
-
-import { InventoryProductCard } from "./InventoryProductCard";
-import {
-  InventoryI,
-  InventoryProductI,
-  ProductI,
-} from "../types/inventory.types";
-
-interface InventoryRightPanelProps {
-  selectedInventory: InventoryI | null;
-  inventoryProducts: InventoryProductI[];
-  inventoryProductsLoading: boolean;
-  productMutationLoading: boolean;
-  allProducts: ProductI[];
-  onOpenAddProduct: () => void;
-  onDeleteProduct: (ip: InventoryProductI) => void;
-}
+import { InventoryRightPanelProps } from "./types";
+import { InventoryProductCard } from "../../components";
+import { useInventaryActions } from "./hooks/useInventaryActions";
 
 export function InventoryRightPanel({
   selectedInventory,
   inventoryProducts,
   inventoryProductsLoading,
   productMutationLoading,
-  allProducts,
-  onOpenAddProduct,
-  onDeleteProduct,
 }: InventoryRightPanelProps) {
   const router = useRouter();
+  const { handleOpenAddProduct, handleOpenDeleteProductModal, allProducts } =
+    useInventaryActions(selectedInventory);
 
   if (!selectedInventory) {
     return (
@@ -66,7 +51,9 @@ export function InventoryRightPanel({
             color="secondary"
             className="gap-2"
             onClick={() =>
-              router.push(`/inventory/sales?inventoryId=${selectedInventory.id}`)
+              router.push(
+                `/inventory/sales?inventoryId=${selectedInventory.id}`
+              )
             }
           >
             <ShoppingCartIcon className="h-4 w-4" />
@@ -77,7 +64,7 @@ export function InventoryRightPanel({
             variant="border"
             size="md"
             color="primary"
-            onClick={onOpenAddProduct}
+            onClick={handleOpenAddProduct}
             disabled={productMutationLoading || allProducts.length === 0}
           >
             + Agregar producto
@@ -115,7 +102,7 @@ export function InventoryRightPanel({
             variant="border"
             size="md"
             color="primary"
-            onClick={onOpenAddProduct}
+            onClick={handleOpenAddProduct}
             disabled={allProducts.length === 0}
           >
             + Agregar producto
@@ -127,7 +114,7 @@ export function InventoryRightPanel({
             <InventoryProductCard
               key={ip.id}
               inventoryProduct={ip}
-              onDelete={onDeleteProduct}
+              onDelete={handleOpenDeleteProductModal}
             />
           ))}
         </div>

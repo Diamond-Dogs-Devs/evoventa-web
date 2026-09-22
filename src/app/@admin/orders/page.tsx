@@ -5,6 +5,7 @@ import { useModal } from "@/shared/providers";
 import { useOrders } from "./hooks";
 import { OrderDetailsModal, OrdersContainer } from "./components";
 import { OrderI } from "./types/order.types";
+import Page from "@/shared/components/Page";
 
 const appConfig = {
   title: "Órdenes",
@@ -13,8 +14,14 @@ const appConfig = {
 
 export default function OrdersPage() {
   const { open, close } = useModal();
-  const { orders, loading, currentPage, totalPages, pageSize, onPaginationChange } =
-    useOrders();
+  const {
+    orders,
+    loading,
+    currentPage,
+    totalPages,
+    pageSize,
+    onPaginationChange,
+  } = useOrders();
 
   const handleOpenDetails = (order: OrderI) => {
     open(<OrderDetailsModal order={order} close={close} />, {
@@ -24,7 +31,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <Layout appConfig={appConfig}>
+    <Page title={appConfig.title}>
       <OrdersContainer
         orders={orders}
         loading={loading}
@@ -34,6 +41,6 @@ export default function OrdersPage() {
         onPaginationChange={onPaginationChange}
         onOrderClick={handleOpenDetails}
       />
-    </Layout>
+    </Page>
   );
 }

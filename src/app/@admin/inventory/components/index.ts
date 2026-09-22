@@ -4,6 +4,5 @@ export * from "./deleteInventoryModal";
 export * from "./deleteInventoryProductModal";
 export * from "./editInventoryProductModal";
 export * from "./InventoryProductCard";
-export * from "./InventoryRightPanel";
 export * from "./InventoryList";
 export * from "./productNotFoundModal";
