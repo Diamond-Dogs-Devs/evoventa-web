@@ -1,4 +1,4 @@
-export type Role = 'admin' | 'user';
+export type Role = "admin" | "user";
 
 export interface User {
   id: string;
@@ -24,7 +24,7 @@ export interface ApiError {
 export interface AuthContextType {
   user: User | null;
   role?: string;
-  mutationLoading: boolean;
+  isLoading: boolean;
   login: (values: LoginValues) => void;
   logout: () => void;
 }

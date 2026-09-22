@@ -9,16 +9,11 @@ import { ToastContent } from "../../ui";
 import { useCustomMutation } from "../../api";
 
 import { AuthContext } from "../context/auth.context";
-import {
-  LoginResponse,
-  LoginValues,
-  User,
-  ApiError,
-  AuthProviderProps,
-} from "../types/auth.types";
+import { LoginValues, User, AuthProviderProps } from "../types/auth.types";
 import { AuthController } from "@/shared/services/auth/AuthController";
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { push, refresh } = useRouter();
   const { open } = useToast();
 
@@ -35,6 +30,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   const login = async ({ email, password }: LoginValues) => {
+    setIsLoading(true);
     try {
       const authController = new AuthController();
       const { token, user } = await authController.loginUser(email, password);
@@ -48,13 +44,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       open({
         type: "error",
         content: (
-          <ToastContent
-            title="Error"
-            subtitle={e?.response?.data?.message || "Error al iniciar sesión"}
-          />
+          <ToastContent title="Error" subtitle="Error al iniciar sesión" />
         ),
       });
     }
+    setIsLoading(false);
   };
 
   const logout = async () => {
@@ -76,6 +70,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         role: user?.role,
         login,
         logout,
+        isLoading,
       }}
     >
       {children}
