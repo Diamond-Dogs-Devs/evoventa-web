@@ -33,7 +33,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true);
     try {
       const authController = new AuthController();
-      const { token, user } = await authController.loginUser(email, password);
+      const { token, user } = await authController.loginWithNextApi(
+        email,
+        password
+      );
       setUser(user);
       //TODO: Delete localstorage for security
       localStorage.setItem("user", JSON.stringify(user));
