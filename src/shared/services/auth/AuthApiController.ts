@@ -1,4 +1,4 @@
-import { URL_AUTH } from "@/shared/urls";
+import { URL_AUTH, URL_DOMAIN } from "@/shared/urls";
 import axios from "axios";
 import { AuthLoginSuccess, AuthRequest, IAuthController } from "./domain";
 
@@ -39,5 +39,23 @@ export class AuthApiController implements IAuthController {
         withCredentials: true,
       }
     );
+  }
+
+  async loginWithNextApi(
+    email: string,
+    password: string
+  ): Promise<AuthLoginSuccess> {
+    const credetials = {
+      email,
+      password,
+    };
+    const { data } = await axios.post<AuthLoginSuccess>(
+      `${URL_DOMAIN}/login`,
+      credetials,
+      {
+        withCredentials: true,
+      }
+    );
+    return data;
   }
 }

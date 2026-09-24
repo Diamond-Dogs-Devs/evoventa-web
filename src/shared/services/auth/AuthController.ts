@@ -20,4 +20,11 @@ export class AuthController {
   async logoutUser(): Promise<boolean> {
     return this.authUsecase.logoutUser();
   }
+
+  async loginWithNextApi(
+    email: string,
+    password: string
+  ): Promise<AuthLoginSuccess> {
+    return this.authUsecase.loginUser(email, password);
+  }
 }

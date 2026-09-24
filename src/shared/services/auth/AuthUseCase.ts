@@ -24,4 +24,11 @@ export class AuthUseCase {
     }
     return false;
   }
+
+  async loginWithNextApi(
+    email: string,
+    password: string
+  ): Promise<AuthLoginSuccess> {
+    return this.authApiController.loginUser(email, password);
+  }
 }

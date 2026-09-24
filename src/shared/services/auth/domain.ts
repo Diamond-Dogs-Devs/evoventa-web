@@ -33,4 +33,5 @@ export interface IAuthController {
   validSesionUser(token: string): Promise<AuthRequest>;
   loginUser(email: string, password: string): Promise<AuthLoginSuccess>;
   logoutUser(): Promise<void>;
+  loginWithNextApi(email: string, password: string): Promise<AuthLoginSuccess>;
 }
