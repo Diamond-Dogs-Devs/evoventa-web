@@ -32,13 +32,7 @@ export class AuthApiController implements IAuthController {
   }
 
   async logoutUser(): Promise<void> {
-    await axios.post<AuthLoginSuccess>(
-      `${URL_AUTH}/logout`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
+    await axios.delete<AuthLoginSuccess>(`${URL_DOMAIN}/login`, {});
   }
 
   async loginWithNextApi(

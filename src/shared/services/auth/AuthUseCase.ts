@@ -29,6 +29,6 @@ export class AuthUseCase {
     email: string,
     password: string
   ): Promise<AuthLoginSuccess> {
-    return this.authApiController.loginUser(email, password);
+    return this.authApiController.loginWithNextApi(email, password);
   }
 }
