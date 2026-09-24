@@ -1,6 +1,20 @@
 import { AuthController } from "@/shared/services/auth/AuthController";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function DELETE() {
+  const res = NextResponse.json({
+    ok: true,
+  });
+
+  res.cookies.set("access_token", "", {
+    httpOnly: true,
+    path: "/",
+    expires: new Date(0),
+  });
+
+  return res;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
