@@ -32,8 +32,6 @@ export function DataTable<T>({
   useEffect(() => {
     initializeData();
   }, [initializeData]);
-  console.log("data:", data);
-  console.log("externalData:", externalData);
   const loadData = useCallback(async () => {
     try {
       if (onLoad) {
