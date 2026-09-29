@@ -22,7 +22,6 @@ export default async function RootLayout({
   };
 
   const isLoggin = await checkUser();
-  console.log("isLoggin:", isLoggin);
   return (
     <html lang="es">
       <body>{isLoggin ? admin : anonym}</body>
