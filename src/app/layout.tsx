@@ -1,9 +1,13 @@
 import { ReactNode } from "react";
-import { SWRProvider, ModalProvider, AuthProvider } from "@/shared/providers";
 
-import "./globals.css";
 import { cookies } from "next/headers";
 import { AuthController } from "@/shared/services/auth/AuthController";
+import { PWARegister } from "@/shared/providers";
+import "./globals.css";
+
+export const metadata = {
+  manifest: "/manifest.webmanifest",
+};
 
 export default async function RootLayout({
   anonym,
@@ -24,7 +28,10 @@ export default async function RootLayout({
   const isLoggin = await checkUser();
   return (
     <html lang="es">
-      <body>{isLoggin ? admin : anonym}</body>
+      <body>
+        <PWARegister />
+        {isLoggin ? admin : anonym}
+      </body>
     </html>
   );
 }
