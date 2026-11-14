@@ -1,4 +1,4 @@
-import type { ClientFormMode } from "../components/interfaces";
+import type { ClientFormMode } from "../types/client.types";
 
 export const ADD_CLIENTS_FORM_INITIAL_VALUES = {
   name: "",

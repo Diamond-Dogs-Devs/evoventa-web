@@ -1,13 +1,5 @@
 import { ConfirmDeleteModal } from "@/shared/components/ConfirmDeleteModal";
-
-interface DeleteClientModalProps {
-  handleDeleteClient: (id: number) => void;
-  close: () => void;
-  values: {
-    id: number;
-    name: string;
-  };
-}
+import { DeleteClientModalProps } from "./interfaces";
 
 export const DeleteClientModal = ({ handleDeleteClient, close, values }: DeleteClientModalProps) => (
   <ConfirmDeleteModal

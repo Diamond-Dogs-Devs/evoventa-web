@@ -1,13 +1,11 @@
 "use client";
 
-import { FormikValues } from "formik";
 import { ClientForm } from "./ClientForm";
+import { AddClientModalProps } from "./interfaces";
 
-type Props = {
-  handleCreateClient: (values: FormikValues) => void;
-  close: () => void;
-};
-
-export const AddClientModal = ({ handleCreateClient, close }: Props) => (
+export const AddClientModal = ({
+  handleCreateClient,
+  close,
+}: AddClientModalProps) => (
   <ClientForm mode="create" onSubmit={handleCreateClient} close={close} />
 );

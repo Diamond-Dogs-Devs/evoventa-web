@@ -8,3 +8,5 @@ export interface ClientI {
   isActive?: boolean;
   createdAt?: string;
 }
+
+export type ClientFormMode = "create" | "edit";

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Form, Formik, FormikValues } from "formik";
+import { Form, Formik } from "formik";
 
 import { Button, InputFormik } from "@/shared/ui";
 import {
@@ -16,15 +16,7 @@ import {
   ADD_CLIENTS_FORM_INITIAL_VALUES,
   CLIENT_FORM_COPY,
 } from "../utils/constants";
-import { ClientFormMode } from "./interfaces";
-
-interface ClientFormProps {
-  mode: ClientFormMode;
-  /** Form values (`phone`, not `telephone`). Defaults to an empty form. */
-  initialValues?: FormikValues;
-  onSubmit: (values: FormikValues) => void;
-  close: () => void;
-}
+import { ClientFormProps } from "./interfaces";
 
 // Create/edit form for clients, rendered in the right-side panel
 // (Modal position="right").

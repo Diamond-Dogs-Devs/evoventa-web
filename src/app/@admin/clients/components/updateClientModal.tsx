@@ -1,13 +1,7 @@
 "use client";
 
-import { FormikValues } from "formik";
 import { ClientForm } from "./ClientForm";
-
-interface UpdateClientModalProps {
-  handleUpdateClient: (values: FormikValues) => void;
-  close: () => void;
-  values: FormikValues;
-}
+import { UpdateClientModalProps } from "./interfaces";
 
 export const UpdateClientModal = ({
   handleUpdateClient,
