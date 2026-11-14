@@ -6,11 +6,17 @@ import {
   CalendarIcon,
   ShoppingBagIcon,
   ExclamationTriangleIcon,
+  PrinterIcon,
 } from "@heroicons/react/24/outline";
-import { Button, Heading } from "@/shared/ui";
+import { useState } from "react";
+import { mutate } from "swr";
+import { Button, Heading, ToastContent } from "@/shared/ui";
+import { useCustomMutation } from "@/shared/api";
+import { useToast } from "@/shared/overlay-manager";
+import { PrintableReceipt } from "@/shared/components/PrintableReceipt";
 import { useOrderDetails } from "../hooks";
 import { OrderI } from "../types/order.types";
-import { getOrderStatusConfig } from "../utils";
+import { getOrderStatusConfig, QUOTATION_BADGE } from "../utils";
 
 interface OrderDetailsModalProps {
   order: OrderI;
@@ -21,6 +27,48 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
   const status = getOrderStatusConfig(order.status);
   const createdAt = new Date(order.createdAt).toLocaleString("es-MX");
   const { items, loading, error } = useOrderDetails(order.id);
+  const isQuotation = order.type === "QUOTATION";
+  // Receipts are only for sales; quotations aren't a sale yet.
+  const canPrintReceipt = order.type === "ORDER";
+  const [confirmingConversion, setConfirmingConversion] = useState(false);
+  const { open: openToast } = useToast();
+
+  const { patch, loading: converting } = useCustomMutation({
+    url: "/orders",
+    // Revalidate every orders list (all pages and type filters).
+    mutateKey: [],
+    onSuccess: () => {
+      mutate(
+        (key) => typeof key === "string" && key.startsWith("/orders"),
+      );
+      openToast({
+        type: "success",
+        content: (
+          <ToastContent
+            title="Éxito"
+            subtitle={`La cotización ${order.orderNumber} ahora es una venta`}
+          />
+        ),
+      });
+      close();
+    },
+    onError: () => {
+      openToast({
+        type: "error",
+        content: (
+          <ToastContent
+            title="Error"
+            subtitle="No se pudo convertir la cotización en venta"
+          />
+        ),
+      });
+    },
+  });
+
+  const handleConvertToSale = () =>
+    patch(`/orders/type/${order.id}`, { type: "ORDER" }).catch(() => {
+      // Error toast is shown by onError.
+    });
 
   return (
     <div className="flex flex-col gap-5">
@@ -28,12 +76,22 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
         <Heading variant="sectionHeadingCard" className="!py-0 !border-0">
           {order.orderNumber}
         </Heading>
-        <Heading
-          variant="body"
-          className={`text-xs font-medium px-2 py-1 rounded-full shrink-0 ${status.badgeClassName}`}
-        >
-          {status.label}
-        </Heading>
+        <div className="flex items-center gap-1.5 shrink-0">
+          {isQuotation && (
+            <Heading
+              variant="body"
+              className={`text-xs font-medium px-2 py-1 rounded-full ${QUOTATION_BADGE.badgeClassName}`}
+            >
+              {QUOTATION_BADGE.label}
+            </Heading>
+          )}
+          <Heading
+            variant="body"
+            className={`text-xs font-medium px-2 py-1 rounded-full ${status.badgeClassName}`}
+          >
+            {status.label}
+          </Heading>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -121,14 +179,14 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
                     {item.name}
                   </Heading>
                   <Heading variant="body" className="text-xs !text-gray-400">
-                    {item.quantity} × ${Number(item.salePrice).toFixed(2)}
+                    {item.quantity} x ${Number(item.price).toFixed(2)}
                   </Heading>
                 </div>
                 <Heading
                   variant="body"
                   className="text-sm font-semibold !text-gray-800 shrink-0"
                 >
-                  ${(Number(item.salePrice) * item.quantity).toFixed(2)}
+                  ${(Number(item.price) * item.quantity).toFixed(2)}
                 </Heading>
               </div>
             ))}
@@ -145,11 +203,76 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
         </Heading>
       </div>
 
-      <div className="flex justify-end">
-        <Button type="button" variant="fill" color="primary" onClick={close}>
-          Cerrar
-        </Button>
-      </div>
+      {isQuotation && confirmingConversion ? (
+        <div className="flex flex-col gap-3 rounded-lg border border-purple-200 bg-purple-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-purple-900">
+            ¿Convertir esta cotización en venta?
+          </p>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="border"
+              color="primary"
+              onClick={() => setConfirmingConversion(false)}
+              disabled={converting}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              variant="fill"
+              color="primary"
+              onClick={handleConvertToSale}
+              loading={converting}
+              disabled={converting}
+            >
+              {converting ? "Convirtiendo..." : "Sí, convertir"}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap justify-end gap-2">
+          {canPrintReceipt && (
+            <Button
+              type="button"
+              variant="border"
+              color="primary"
+              className="gap-2"
+              onClick={() => window.print()}
+              disabled={loading || !!error || items.length === 0}
+            >
+              <PrinterIcon className="h-4 w-4" />
+              Reimprimir recibo
+            </Button>
+          )}
+          {isQuotation && (
+            <Button
+              type="button"
+              variant="border"
+              color="primary"
+              onClick={() => setConfirmingConversion(true)}
+            >
+              Convertir en venta
+            </Button>
+          )}
+          <Button type="button" variant="fill" color="primary" onClick={close}>
+            Cerrar
+          </Button>
+        </div>
+      )}
+      {canPrintReceipt && items.length > 0 && (
+        <PrintableReceipt
+          orderNumber={order.orderNumber}
+          date={new Date(order.createdAt)}
+          clientName={order.clientName}
+          items={items.map((item) => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: Number(item.price),
+          }))}
+          total={Number(order.totalAmount)}
+        />
+      )}
     </div>
   );
 }
