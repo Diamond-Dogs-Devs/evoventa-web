@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, Button, Table, Heading } from "@/shared/ui";
+import { Button, Pagination } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 
 import { useClients } from "./hooks";
@@ -8,9 +8,11 @@ import {
   AddClientModal,
   DeleteClientModal,
   UpdateClientModal,
+  ClientCard,
 } from "./components";
 import { ClientI } from "./types/client.types";
 import Page from "@/shared/components/Page";
+import { CardGrid } from "@/shared/components/CardGrid";
 
 const appConfig = {
   title: "Clientes",
@@ -18,7 +20,6 @@ const appConfig = {
 };
 
 export default function ClientsPage() {
-  const actions = ["edit", "delete"];
   const { open, close } = useModal();
 
   const {
@@ -28,7 +29,6 @@ export default function ClientsPage() {
     totalPages,
     pageSize,
     onPaginationChange,
-    cols,
     handleCreateClient,
     handleDeleteClient,
     handleEditClient,
@@ -38,7 +38,7 @@ export default function ClientsPage() {
   const handleOpenCreateModal = () => {
     open(
       <AddClientModal handleCreateClient={handleCreateClient} close={close} />,
-      { fullHeight: false }
+      { position: "right" }
     );
   };
 
@@ -49,7 +49,7 @@ export default function ClientsPage() {
         close={close}
         values={values}
       />,
-      { fullHeight: false }
+      { position: "right" }
     );
   };
 
@@ -66,7 +66,7 @@ export default function ClientsPage() {
 
   return (
     <Page title={appConfig.title}>
-      <div className="h-screen w-full">
+      <div className="flex flex-col gap-4 min-h-[calc(100vh-10rem)]">
         <div className="flex justify-end mt-2">
           <Button
             type="button"
@@ -80,29 +80,31 @@ export default function ClientsPage() {
           </Button>
         </div>
 
-        {clients.length !== 0 ? (
-          <div className="overflow-auto mt-10">
-            <Table
-              withPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              currentLimit={pageSize}
-              onPaginationChange={onPaginationChange}
-              data={clients}
-              columns={cols}
-              path={(row) => `/clients/${row.original.id}`}
-              loading={loading}
-              actions={actions}
+        <CardGrid
+          items={clients}
+          loading={loading}
+          pageSize={pageSize}
+          emptyTitle="No hay clientes agregados"
+          emptySubtitle='Agrega tu primer cliente con el botón "Agregar Cliente"'
+          renderItem={(client) => (
+            <ClientCard
+              key={client.id}
+              client={client}
               onEdit={handleOpenEditModal}
               onDelete={handleOpenDeleteModal}
             />
-          </div>
-        ) : (
-          <div className="flex justify-center items-center">
-            <Heading variant="sectionHeadingCard">
-              No hay clientes agregados
-            </Heading>
-          </div>
+          )}
+        />
+
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={(page) => onPaginationChange(page, pageSize)}
+            onPageSizeChange={(size) => onPaginationChange(1, size)}
+            pageSizeOptions={[10, 20, 50]}
+          />
         )}
       </div>
     </Page>

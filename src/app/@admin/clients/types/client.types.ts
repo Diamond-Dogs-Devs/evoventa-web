@@ -5,4 +5,6 @@ export interface ClientI {
   email: string;
   address: string;
   rfc: string;
+  isActive?: boolean;
+  createdAt?: string;
 }

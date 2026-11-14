@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { FormikValues } from "formik";
 import { useCustomSWR, fetcher, useCustomMutation } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
@@ -64,16 +62,6 @@ export const useClients = () => {
     },
   });
 
-  const cols = useMemo<ColumnDef<ClientI>[]>(
-    () => [
-      { header: "Nombre", accessorKey: "name" },
-      { header: "Teléfono", accessorKey: "telephone" },
-      { header: "Email", accessorKey: "email" },
-      { header: "Dirección", accessorKey: "address" },
-    ],
-    [],
-  );
-
   const handleCreateClient = (values: FormikValues) => {
     post({
       name: values.name,
@@ -103,7 +91,6 @@ export const useClients = () => {
     totalPages: data?.meta?.lastPage ?? 0,
     loading,
     error,
-    cols,
     mutationLoading,
     handleCreateClient,
     handleEditClient,
