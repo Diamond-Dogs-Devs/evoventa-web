@@ -12,9 +12,11 @@ import {
 } from "@/shared/components/SidePanelForm";
 
 import { addClientSchema } from "../schemas/addClient";
-import { ADD_CLIENTS_FORM_INITIAL_VALUES } from "../utils/constants";
-
-export type ClientFormMode = "create" | "edit";
+import {
+  ADD_CLIENTS_FORM_INITIAL_VALUES,
+  CLIENT_FORM_COPY,
+} from "../utils/constants";
+import { ClientFormMode } from "./interfaces";
 
 interface ClientFormProps {
   mode: ClientFormMode;
@@ -24,22 +26,6 @@ interface ClientFormProps {
   close: () => void;
 }
 
-const COPY: Record<
-  ClientFormMode,
-  { title: string; subtitle: string; submit: string }
-> = {
-  create: {
-    title: "Nuevo cliente",
-    subtitle: "Registra los datos de contacto y facturación del cliente.",
-    submit: "Crear cliente",
-  },
-  edit: {
-    title: "Editar cliente",
-    subtitle: "Actualiza los datos del cliente.",
-    submit: "Guardar cambios",
-  },
-};
-
 // Create/edit form for clients, rendered in the right-side panel
 // (Modal position="right").
 export const ClientForm = ({
@@ -48,7 +34,7 @@ export const ClientForm = ({
   onSubmit,
   close,
 }: ClientFormProps) => {
-  const copy = COPY[mode];
+  const copy = CLIENT_FORM_COPY[mode];
 
   return (
     <Formik

@@ -5,3 +5,5 @@ export interface ClientCardProps {
   onEdit: (client: ClientI) => void;
   onDelete: (client: ClientI) => void;
 }
+
+export type ClientFormMode = "create" | "edit";
