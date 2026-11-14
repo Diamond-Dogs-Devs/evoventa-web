@@ -3,6 +3,11 @@
 import { ShoppingBagIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/shared/ui";
 import { InventoryProductI } from "../types/inventory.types";
+import {
+  PRODUCT_STATUS_BADGE_CLASSES,
+  getProductStatus,
+  isProductStatusSellable,
+} from "@/shared/utils/productStatus";
 
 interface InventoryProductCardProps {
   inventoryProduct: InventoryProductI;
@@ -14,7 +19,9 @@ export function InventoryProductCard({
   onDelete,
 }: InventoryProductCardProps) {
   const product = ip.product;
-  const isOutOfStock = ip.quantity === 0 || product?.status === "UNAVAILABLE";
+  const status = getProductStatus(product?.status);
+  const isOutOfStock =
+    ip.quantity === 0 || !isProductStatusSellable(product?.status);
 
   const stockColor = isOutOfStock
     ? "bg-red-100 text-red-600"
@@ -58,17 +65,17 @@ export function InventoryProductCard({
           <span
             className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${stockColor}`}
           >
-            {isOutOfStock ? "Sin stock" : `Stock: ${ip.quantity}`}
+            {ip.quantity === 0 ? "Sin stock" : `Stock: ${ip.quantity}`}
           </span>
-          <span
-            className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
-              product?.status === "AVAILABLE"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 text-gray-500"
-            }`}
-          >
-            {product?.status === "AVAILABLE" ? "Disponible" : "No disponible"}
-          </span>
+          {status && (
+            <span
+              className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
+                PRODUCT_STATUS_BADGE_CLASSES[status.tone]
+              }`}
+            >
+              {status.label}
+            </span>
+          )}
         </div>
       </div>
 

@@ -44,6 +44,8 @@ export default function SalesPage() {
     updateQuantity,
     orderLoading,
     handleCreateOrder,
+    quotationLoading,
+    handleCreateQuotation,
   } = useSales(initialInventoryId, () => setStep("sale"));
 
   const loading = inventoriesLoading || inventoryProductsLoading;
@@ -58,6 +60,8 @@ export default function SalesPage() {
           total={total}
           orderLoading={orderLoading}
           onConfirm={handleCreateOrder}
+          quotationLoading={quotationLoading}
+          onSaveQuotation={handleCreateQuotation}
           onBack={() => setStep("sale")}
         />
       </Page>

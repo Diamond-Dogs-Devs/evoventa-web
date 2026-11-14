@@ -26,6 +26,15 @@ export interface InventoryProductI {
   inventoryId: number;
   productId: number;
   quantity: number;
+  lowStock: number;
+  criticalStock: number;
   product: ProductI;
   InventoryItem: Array<ProductI>;
+}
+
+export interface InventoryItemFormI {
+  productId: string;
+  quantity: number;
+  lowStock: number;
+  criticalStock: number;
 }

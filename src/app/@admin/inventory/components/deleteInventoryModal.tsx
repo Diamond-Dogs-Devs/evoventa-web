@@ -1,6 +1,6 @@
-import { Button, Heading } from "@/shared/ui";
+import { ConfirmDeleteModal } from "@/shared/components/ConfirmDeleteModal";
 
-interface Props {
+interface DeleteInventoryModalProps {
   handleDeleteInventory: (id: number) => void;
   close: () => void;
   values: {
@@ -9,39 +9,12 @@ interface Props {
   };
 }
 
-export const DeleteInventoryModal = ({
-  handleDeleteInventory,
-  close,
-  values,
-}: Props) => {
-  const { id, name } = values;
-  const handleConfirmDelete = () => {
-    handleDeleteInventory(id);
-    close();
-  };
-
-  return (
-    <div>
-      <Heading
-        variant="sectionHeadingCard"
-        className="text-error-100 text-center"
-      >
-        ¿Estás seguro de que quieres{" "}
-        <span className="text-title-caution">ELIMINAR</span> {name}?
-      </Heading>
-      <div className="flex justify-end mt-14">
-        <Button
-          onClick={close}
-          variant="fill"
-          color="primary"
-          className="mr-2"
-        >
-          Cancelar
-        </Button>
-        <Button onClick={handleConfirmDelete} variant="fill" color="secondary">
-          Eliminar inventario
-        </Button>
-      </div>
-    </div>
-  );
-};
+export const DeleteInventoryModal = ({ handleDeleteInventory, close, values }: DeleteInventoryModalProps) => (
+  <ConfirmDeleteModal
+    title="¿Eliminar inventario?"
+    itemName={values.name}
+    confirmLabel="Eliminar inventario"
+    onConfirm={() => handleDeleteInventory(values.id)}
+    close={close}
+  />
+);

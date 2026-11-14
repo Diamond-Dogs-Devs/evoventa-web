@@ -5,7 +5,28 @@ import { useCustomSWR, fetcher, useCustomMutation } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
-import { InventoryI, ProductI, InventoryProductI } from "../types/inventory.types";
+import {
+  InventoryI,
+  ProductI,
+  InventoryProductI,
+  InventoryItemFormI,
+} from "../types/inventory.types";
+import type { EditInventoryProductValues } from "../components/editInventoryProductModal";
+import { DEFAULT_CRITICAL_STOCK, DEFAULT_LOW_STOCK } from "../utils/constants";
+
+type ItemLike = {
+  productId: string | number;
+  quantity: number | string;
+  lowStock?: number | string;
+  criticalStock?: number | string;
+};
+
+const toItemPayload = (item: ItemLike): InventoryItemFormI => ({
+  productId: String(item.productId),
+  quantity: Number(item.quantity),
+  lowStock: Number(item.lowStock) || DEFAULT_LOW_STOCK,
+  criticalStock: Number(item.criticalStock) || DEFAULT_CRITICAL_STOCK,
+});
 
 export const useInventory = (selectedInventoryId?: number) => {
   const { open } = useToast();
@@ -195,36 +216,42 @@ export const useInventory = (selectedInventoryId?: number) => {
       name: values.name,
       code: values.code,
       description: values.description,
-      items: values.items.map((item: { id: string; quantity: number }) => ({
-        productId: item.id,
-        quantity: Number(item.quantity),
-      })),
+      items: values.items.map(
+        (item: Omit<InventoryItemFormI, "productId"> & { id: string }) =>
+          toItemPayload({ ...item, productId: item.id }),
+      ),
     });
   };
+
+  // PATCH /inventory/:id replaces the whole item list, so existing items
+  // must be re-sent with their thresholds or the API rejects the request.
+  const existingItemPayloads = (): InventoryItemFormI[] =>
+    rawInventoryProducts.map((item) => toItemPayload(item));
 
   const handleAddProductToInventory = (values: FormikValues) => {
     if (!inventoryProductsKey) return;
 
-    const existingItems = (
-      inventoryProductsData?.InventoryItem ??
-      inventoryProductsData?.data?.InventoryItem ??
-      []
-    ).map((item: InventoryProductI) => ({
-      productId: String(item.productId),
-      quantity: item.quantity,
-    }));
-
-    const newItems = values.items.map(
-      (item: { productId: string; quantity: number }) => ({
-        productId: String(item.productId),
-        quantity: Number(item.quantity),
-      }),
+    const byProduct = new Map<string, InventoryItemFormI>(
+      existingItemPayloads().map((item) => [item.productId, item]),
     );
+
+    // Adding a product that is already in the inventory sums the quantity
+    // and takes the new thresholds, instead of sending a duplicate item.
+    values.items.forEach((raw: InventoryItemFormI) => {
+      const item = toItemPayload(raw);
+      const existing = byProduct.get(item.productId);
+      byProduct.set(
+        item.productId,
+        existing
+          ? { ...item, quantity: existing.quantity + item.quantity }
+          : item,
+      );
+    });
 
     patchProductToInventory(inventoryProductsKey, {
       name: inventoryProductsData?.name,
       description: inventoryProductsData?.description,
-      items: [...existingItems, ...newItems],
+      items: [...byProduct.values()],
     });
   };
 
@@ -232,13 +259,15 @@ export const useInventory = (selectedInventoryId?: number) => {
     deleteInventory(`/inventory/${id}`);
   };
 
-  const handleEditInventoryProduct = (itemId: number, quantity: number) => {
+  const handleEditInventoryProduct = (
+    itemId: number,
+    values: EditInventoryProductValues,
+  ) => {
     if (!inventoryProductsKey) return;
 
-    const updatedItems = rawInventoryProducts.map((item) => ({
-      productId: String(item.productId),
-      quantity: item.id === itemId ? quantity : item.quantity,
-    }));
+    const updatedItems = rawInventoryProducts.map((item) =>
+      toItemPayload(item.id === itemId ? { ...item, ...values } : item),
+    );
     patchProductToInventory(inventoryProductsKey, {
       name: inventoryProductsData?.name,
       description: inventoryProductsData?.description,

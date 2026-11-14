@@ -6,7 +6,7 @@ import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 
-import { useGlobalBarcodeScan } from "./useGlobalBarcodeScan";
+import { useGlobalBarcodeScan } from "@/shared/hooks/useGlobalBarcodeScan";
 import { ProductNotFoundModal } from "../components/ProductNotFoundModal";
 import { ProductNotInInventoryModal } from "../components/ProductNotInInventoryModal";
 import {
@@ -293,17 +293,73 @@ export const useSales = (
 
   useGlobalBarcodeScan((barcode) => setBarcodeSearch(barcode));
 
+  const buildOrderPayload = (prefix: "ORD" | "COT") => ({
+    orderNumber: `${prefix}-${Date.now()}`,
+    clientId: selectedClient!.id,
+    items: cartItems.map((item) => ({
+      productId: String(item.inventoryProduct.productId),
+      quantity: Number(item.quantity),
+      price: Number(item.inventoryProduct.product?.salePrice ?? 0),
+    })),
+  });
+
   const handleCreateOrder = () => {
     if (!selectedClient || cartItems.length === 0) return;
-    post({
-      orderNumber: `ORD-${Date.now()}`,
-      clientId: selectedClient.id,
-      items: cartItems.map((item) => ({
-        productId: item.inventoryProduct.productId,
-        quantity: item.quantity,
-        salePrice: item.inventoryProduct.product?.salePrice ?? 0,
-      })),
+    post(buildOrderPayload("ORD"));
+  };
+
+  const {
+    post: postQuotation,
+    patch: patchQuotation,
+    loading: quotationLoading,
+  } = useCustomMutation<{ id: string; orderNumber: string }>({
+    url: "/orders",
+    mutateKey: "/orders",
+  });
+
+  const showToast = (type: "success" | "error", title: string, subtitle: string) =>
+    openToast({
+      type,
+      content: <ToastContent title={title} subtitle={subtitle} />,
     });
+
+  const resetSale = () => {
+    setCartItems([]);
+    setSelectedClient(null);
+    onOrderSuccess?.();
+  };
+
+  /**
+   * The API can't create an order with a type, so a quotation is created as
+   * an order and then switched with PATCH /orders/type/:id. If the second
+   * step fails the order stays as a sale, and the toast says which one.
+   */
+  const handleCreateQuotation = async () => {
+    if (!selectedClient || cartItems.length === 0) return;
+
+    let order: { id: string; orderNumber: string };
+    try {
+      order = await postQuotation(buildOrderPayload("COT"));
+    } catch {
+      showToast("error", "Error", "No se pudo guardar la cotización");
+      return;
+    }
+
+    try {
+      await patchQuotation(`/orders/type/${order.id}`, { type: "QUOTATION" });
+    } catch {
+      showToast(
+        "error",
+        "Cotización incompleta",
+        `Se creó la orden ${order.orderNumber}, pero quedó como venta. Revísala en Órdenes.`,
+      );
+      // The order exists: clear the cart so it isn't submitted twice.
+      resetSale();
+      return;
+    }
+
+    showToast("success", "Éxito", `Cotización ${order.orderNumber} guardada`);
+    resetSale();
   };
 
   return {
@@ -327,5 +383,7 @@ export const useSales = (
     barcodeLoading,
     orderLoading,
     handleCreateOrder,
+    quotationLoading,
+    handleCreateQuotation,
   };
 };
