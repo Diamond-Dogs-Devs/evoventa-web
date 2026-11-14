@@ -3,13 +3,7 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { EntityCard, getInitials } from "@/shared/components/EntityCard";
-import { ClientI } from "../types/client.types";
-
-interface ClientCardProps {
-  client: ClientI;
-  onEdit: (client: ClientI) => void;
-  onDelete: (client: ClientI) => void;
-}
+import { ClientCardProps } from "./interfaces";
 
 export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
   return (
