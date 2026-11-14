@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { PRODUCT_STATUS_VALUES } from '../utils/constants';
 
 export const addProductSchema = Yup.object().shape({
   name: Yup.string()
@@ -28,7 +29,7 @@ export const addProductSchema = Yup.object().shape({
   status: Yup.string()
     .required('El estado es requerido')
     .oneOf(
-      ['AVAILABLE', 'UNAVAILABLE'],
-      'El estado debe ser disponible o no disponible'
+      PRODUCT_STATUS_VALUES,
+      'El estado debe ser disponible, agotado o descontinuado'
     ),
 });
