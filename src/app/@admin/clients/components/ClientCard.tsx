@@ -1,38 +1,19 @@
 "use client";
 
-import { format, isValid } from "date-fns";
-import { es } from "date-fns/locale";
-import { EntityCard, getInitials } from "@/shared/components/EntityCard";
+import { EntityCard } from "@/shared/components/EntityCard";
+import { useClientCard } from "../hooks/useClientCard";
 import { ClientCardProps } from "./interfaces";
 
 export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
-  // An empty or malformed createdAt would make format() throw.
-  const date = client.createdAt ? new Date(client.createdAt) : null;
-
-  const formattedDate =
-    date && isValid(date)
-      ? format(date, "d MMM yyyy", { locale: es })
-      : undefined;
+  const { media, lines, badges, footer } = useClientCard(client);
 
   return (
     <EntityCard
-      media={{ alt: client.name, initials: getInitials(client.name) || "?" }}
+      media={media}
       title={client.name}
-      lines={[
-        { text: client.email, tone: "muted" },
-        { text: client.telephone },
-        { text: client.address },
-      ]}
-      badges={
-        client.isActive === false ? [{ label: "Inactivo", tone: "red" }] : []
-      }
-      footer={{
-        primary: client.rfc,
-        primaryTitle: "RFC",
-        primaryClassName: "uppercase",
-        secondary: formattedDate,
-        secondaryTitle: "Fecha de alta",
-      }}
+      lines={lines}
+      badges={badges}
+      footer={footer}
       onEdit={() => onEdit(client)}
       onDelete={() => onDelete(client)}
       editLabel={`Editar a ${client.name}`}
