@@ -1,5 +1,9 @@
-import { FormikValues } from "formik";
-import { ClientFormMode, ClientI } from "../types/client.types";
+import {
+  ClientFormMode,
+  ClientFormValues,
+  ClientI,
+  ClientSubmitHandler,
+} from "../types/client.types";
 
 export interface ClientCardProps {
   client: ClientI;
@@ -9,21 +13,21 @@ export interface ClientCardProps {
 
 export interface ClientFormProps {
   mode: ClientFormMode;
-  /** Form values (`phone`, not `telephone`). Defaults to an empty form. */
-  initialValues?: FormikValues;
-  onSubmit: (values: FormikValues) => void;
+  /** Defaults to an empty form. */
+  initialValues?: ClientFormValues;
+  onSubmit: ClientSubmitHandler;
   close: () => void;
 }
 
 export interface AddClientModalProps {
-  handleCreateClient: (values: FormikValues) => void;
+  handleCreateClient: ClientSubmitHandler;
   close: () => void;
 }
 
 export interface UpdateClientModalProps {
-  handleUpdateClient: (values: FormikValues) => void;
+  handleUpdateClient: ClientSubmitHandler;
   close: () => void;
-  values: FormikValues;
+  values: ClientI;
 }
 
 export interface DeleteClientModalProps {

@@ -10,3 +10,16 @@ export interface ClientI {
 }
 
 export type ClientFormMode = "create" | "edit";
+
+export interface ClientFormValues {
+  id?: number | null;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  rfc: string;
+}
+
+export type ClientSubmitHandler = (
+  values: ClientFormValues,
+) => Promise<unknown>;

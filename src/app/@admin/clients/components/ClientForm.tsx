@@ -12,10 +12,9 @@ import {
 } from "@/shared/components/SidePanelForm";
 
 import { addClientSchema } from "../schemas/addClient";
-import {
-  ADD_CLIENTS_FORM_INITIAL_VALUES,
-  CLIENT_FORM_COPY,
-} from "../utils/constants";
+import { useClientForm } from "../hooks/useClientForm";
+import { ClientFormValues } from "../types/client.types";
+import { ADD_CLIENTS_FORM_INITIAL_VALUES } from "../utils/constants";
 import { ClientFormProps } from "./interfaces";
 
 // Create/edit form for clients, rendered in the right-side panel
@@ -26,18 +25,15 @@ export const ClientForm = ({
   onSubmit,
   close,
 }: ClientFormProps) => {
-  const copy = CLIENT_FORM_COPY[mode];
+  const { copy, handleSubmit } = useClientForm({ mode, onSubmit, close });
 
   return (
-    <Formik
+    <Formik<ClientFormValues>
       initialValues={initialValues}
       validationSchema={addClientSchema}
-      onSubmit={(values) => {
-        onSubmit(values);
-        close();
-      }}
+      onSubmit={handleSubmit}
     >
-      {({ isValid, dirty }) => (
+      {({ isValid, dirty, isSubmitting }) => (
         <Form className="flex h-full flex-col">
           <SidePanelHeader
             title={copy.title}
@@ -74,6 +70,7 @@ export const ClientForm = ({
               variant="border"
               color="primary"
               onClick={close}
+              disabled={isSubmitting}
             >
               Cancelar
             </Button>
@@ -83,7 +80,10 @@ export const ClientForm = ({
               variant="fill"
               // Create needs data first; edit keeps the original behavior
               // (always enabled).
-              disabled={mode === "create" && (!dirty || !isValid)}
+              disabled={
+                isSubmitting || (mode === "create" && (!dirty || !isValid))
+              }
+              loading={isSubmitting}
             >
               {copy.submit}
             </Button>

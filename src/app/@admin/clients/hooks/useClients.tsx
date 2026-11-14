@@ -1,9 +1,8 @@
-import { FormikValues } from "formik";
 import { useCustomSWR, fetcher, useCustomMutation } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
-import { ClientI } from "../types/client.types";
+import { ClientFormValues, ClientI } from "../types/client.types";
 
 export const useClients = () => {
   const { open } = useToast();
@@ -62,7 +61,7 @@ export const useClients = () => {
     },
   });
 
-  const handleCreateClient = (values: FormikValues) => {
+  const handleCreateClient = (values: ClientFormValues) =>
     post({
       name: values.name,
       telephone: values.phone,
@@ -70,9 +69,8 @@ export const useClients = () => {
       address: values.address,
       rfc: values.rfc,
     });
-  };
 
-  const handleEditClient = (values: FormikValues) => {
+  const handleEditClient = (values: ClientFormValues) =>
     patch(`/clients/${values.id}`, {
       name: values.name,
       telephone: values.phone,
@@ -80,7 +78,6 @@ export const useClients = () => {
       address: values.address,
       rfc: values.rfc,
     });
-  };
 
   const handleDeleteClient = (id: number) => {
     remove(`/clients/${id}`);
