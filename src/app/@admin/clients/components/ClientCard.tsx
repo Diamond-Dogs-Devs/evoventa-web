@@ -1,11 +1,19 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { es } from "date-fns/locale";
 import { EntityCard, getInitials } from "@/shared/components/EntityCard";
 import { ClientCardProps } from "./interfaces";
 
 export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
+  // An empty or malformed createdAt would make format() throw.
+  const date = client.createdAt ? new Date(client.createdAt) : null;
+
+  const formattedDate =
+    date && isValid(date)
+      ? format(date, "d MMM yyyy", { locale: es })
+      : undefined;
+
   return (
     <EntityCard
       media={{ alt: client.name, initials: getInitials(client.name) || "?" }}
@@ -22,9 +30,7 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
         primary: client.rfc,
         primaryTitle: "RFC",
         primaryClassName: "uppercase",
-        secondary: client.createdAt
-          ? format(new Date(client.createdAt), "d MMM yyyy", { locale: es })
-          : undefined,
+        secondary: formattedDate,
         secondaryTitle: "Fecha de alta",
       }}
       onEdit={() => onEdit(client)}
