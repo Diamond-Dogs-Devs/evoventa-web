@@ -1,11 +1,34 @@
-import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { FormikValues } from "formik";
 import { useCustomSWR, fetcher, useCustomMutation } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
 import { UserI } from "../types/user.types";
+import { USER_API_ERRORS } from "../utils/constants";
+
+type ApiError = {
+  response?: { status?: number; data?: string | { message?: string | string[] } };
+};
+
+const translateUserError = (msg: string) => {
+  if (msg.includes("Unique constraint failed")) {
+    return msg.includes("employeeNumber")
+      ? USER_API_ERRORS["Employee number already exists"]
+      : USER_API_ERRORS["User already exists"];
+  }
+  return USER_API_ERRORS[msg] ?? msg;
+};
+
+const getUserErrorMessage = (err: ApiError) => {
+  const data = err?.response?.data;
+  const raw = typeof data === "string" ? data : data?.message;
+  const messages = (Array.isArray(raw) ? raw : raw ? [raw] : []).map(
+    translateUserError,
+  );
+  return messages.length
+    ? messages.join(". ")
+    : "No se pudo guardar el usuario";
+};
 
 export const useUsers = () => {
   const { open } = useToast();
@@ -38,15 +61,15 @@ export const useUsers = () => {
     delete: remove,
     loading: mutationLoading,
   } = useCustomMutation({
-    url: "/users",
+    url: "/auth/register",
     mutateKey: usersKey,
-    onError: () => {
+    onError: (err) => {
       open({
         type: "error",
         content: (
           <ToastContent
             title="Error"
-            subtitle="No se pudo actualizar el usuario"
+            subtitle={getUserErrorMessage(err as ApiError)}
           />
         ),
       });
@@ -64,25 +87,16 @@ export const useUsers = () => {
     },
   });
 
-  const cols = useMemo<ColumnDef<UserI>[]>(
-    () => [
-      { header: "Nombre", accessorKey: "name" },
-      { header: "Teléfono", accessorKey: "telephone" },
-      { header: "Email", accessorKey: "email" },
-      { header: "Número de empleado", accessorKey: "employeeNumber" },
-    ],
-    [],
-  );
-
-  const handleCreateUser = (values: FormikValues) => {
+  // Returns the request so the modal can stay open if it fails.
+  const handleCreateUser = (values: FormikValues) =>
     post({
-      name: values.name,
-      email: values.email,
-      telephone: values.telephone,
-      employeeNumber: values.employeeNumber,
+      name: values.name.trim(),
+      email: values.email.trim(),
+      telephone: values.telephone.trim(),
+      employeeNumber: values.employeeNumber.trim(),
       password: values.password,
+      role: values.role,
     });
-  };
 
   const handleUpdateUser = (values: FormikValues) => {
     patch(`/users/${values.id}`, {
@@ -90,6 +104,8 @@ export const useUsers = () => {
       email: values.email,
       telephone: values.telephone,
       employeeNumber: values.employeeNumber,
+      // Always send the current role: the API defaults a missing role to USER.
+      ...(values.role ? { role: values.role } : {}),
       ...(values.password ? { password: values.password } : {}),
     });
   };
@@ -103,7 +119,6 @@ export const useUsers = () => {
     totalPages: data?.meta?.lastPage ?? 0,
     loading,
     error,
-    cols,
     mutationLoading,
     handleCreateUser,
     handleUpdateUser,

@@ -12,7 +12,7 @@ export const addUserSchema = Yup.object().shape({
   name: Yup.string()
     .required("El nombre es requerido")
     .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(20, "El nombre no debe exceder los 20 caracteres")
+    .max(60, "El nombre no debe exceder los 60 caracteres")
     .matches(/^[^$%&|<>#]*$/, "No se permiten caracteres especiales")
     .trim(),
   telephone: Yup.string()
@@ -27,9 +27,13 @@ export const addUserSchema = Yup.object().shape({
     .required("El número de empleado es requerido")
     .trim(),
   password: passwordSchema,
+  role: Yup.string().oneOf(["USER", "ADMIN"]).required("El rol es requerido"),
 });
 
-export const updateUserSchema = addUserSchema.shape({
+// The edit form has no role field (handleUpdateUser doesn't send it), so it
+// must not inherit the create-only `role` rule: Formik would fail validation
+// with no visible error and never submit.
+export const updateUserSchema = addUserSchema.omit(["role"]).shape({
   password: Yup.string().test(
     "strong-if-present",
     "Debe tener al menos 8 caracteres, incluir mayúscula, minúscula, número y símbolo",
