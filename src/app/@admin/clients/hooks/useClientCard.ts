@@ -5,7 +5,6 @@ import { ClientI } from "../types/client.types";
 
 /** Maps a client to the EntityCard props (presentation logic of ClientCard). */
 export const useClientCard = (client: ClientI) => {
-  // An empty or malformed createdAt would make format() throw.
   const createdAt = client.createdAt ? new Date(client.createdAt) : null;
 
   const formattedDate =

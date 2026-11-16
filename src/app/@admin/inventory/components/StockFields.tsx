@@ -1,13 +1,9 @@
 "use client";
 
 import { InputFormik } from "@/shared/ui";
+import { StockFieldsProps } from "../types/inventory.types";
 
-interface Props {
-  /** Formik path of the item, e.g. `items[0]`. Empty for top-level fields. */
-  prefix?: string;
-}
-
-export const StockFields = ({ prefix }: Props) => {
+export const StockFields = ({ prefix }: StockFieldsProps) => {
   const name = (field: string) => (prefix ? `${prefix}.${field}` : field);
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Form, Formik, FormikValues } from "formik";
+import { Form, Formik } from "formik";
 
 import { Button, InputFormik, SelectFormik } from "@/shared/ui";
 import {
@@ -11,38 +11,9 @@ import {
   SidePanelHeader,
 } from "@/shared/components/SidePanelForm";
 
-import { addUserSchema, updateUserSchema } from "../schemas/addUser";
-import {
-  ADD_USERS_FORM_INITIAL_VALUES,
-  ROLE_OPTIONS,
-} from "../utils/constants";
-
-export type UserFormMode = "create" | "edit";
-
-interface UserFormProps {
-  mode: UserFormMode;
-  initialValues?: FormikValues;
-  onSubmit: (values: FormikValues) => void | Promise<unknown>;
-  close: () => void;
-}
-
-const COPY: Record<
-  UserFormMode,
-  { title: string; subtitle: string; submit: string; submitting: string }
-> = {
-  create: {
-    title: "Nuevo usuario",
-    subtitle: "Da de alta a un empleado para que pueda entrar al sistema.",
-    submit: "Crear usuario",
-    submitting: "Creando...",
-  },
-  edit: {
-    title: "Editar usuario",
-    subtitle: "Actualiza los datos del empleado.",
-    submit: "Guardar cambios",
-    submitting: "Guardando...",
-  },
-};
+import { useUserForm } from "../hooks/useUserForm";
+import { UserFormProps } from "../types/user.types";
+import { ADD_USERS_FORM_INITIAL_VALUES, ROLE_OPTIONS } from "../utils/constants";
 
 // Create/edit form for users, rendered in the right-side panel
 // (Modal position="right").
@@ -52,36 +23,20 @@ export const UserForm = ({
   onSubmit,
   close,
 }: UserFormProps) => {
-  const isCreate = mode === "create";
-  const copy = COPY[mode];
+  const { isCreate, copy, subtitle, validationSchema, handleSubmit } =
+    useUserForm({ mode, initialValues, onSubmit, close });
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={isCreate ? addUserSchema : updateUserSchema}
-      onSubmit={async (values) => {
-        if (!isCreate) {
-          onSubmit(values);
-          close();
-          return;
-        }
-        try {
-          await onSubmit(values);
-          close();
-        } catch {
-          // Keep the form open so the user can fix the data.
-        }
-      }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
     >
       {({ isValid, dirty, isSubmitting }) => (
         <Form className="flex h-full flex-col">
           <SidePanelHeader
             title={copy.title}
-            subtitle={
-              !isCreate && initialValues.name
-                ? initialValues.name
-                : copy.subtitle
-            }
+            subtitle={subtitle}
             onClose={close}
           />
 

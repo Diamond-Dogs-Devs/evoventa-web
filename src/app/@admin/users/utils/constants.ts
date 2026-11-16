@@ -1,3 +1,5 @@
+import type { UserFormMode } from "../types/user.types";
+
 export const ROLE_OPTIONS = [
   { value: "USER", label: "Empleado" },
   { value: "ADMIN", label: "Administrador" },
@@ -23,4 +25,22 @@ export const USER_API_ERRORS: Record<string, string> = {
   "telephone must be a phone number": "El número de teléfono no es válido",
   "email must be an email": "El email no es válido",
   "Forbidden resource": "Solo un administrador puede crear usuarios",
+};
+
+export const USER_FORM_COPY: Record<
+  UserFormMode,
+  { title: string; subtitle: string; submit: string; submitting: string }
+> = {
+  create: {
+    title: "Nuevo usuario",
+    subtitle: "Da de alta a un empleado para que pueda entrar al sistema.",
+    submit: "Crear usuario",
+    submitting: "Creando...",
+  },
+  edit: {
+    title: "Editar usuario",
+    subtitle: "Actualiza los datos del empleado.",
+    submit: "Guardar cambios",
+    submitting: "Guardando...",
+  },
 };

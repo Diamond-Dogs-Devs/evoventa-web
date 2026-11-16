@@ -1,17 +1,11 @@
 import { ConfirmDeleteModal } from "@/shared/components/ConfirmDeleteModal";
-import { InventoryProductI } from "../types/inventory.types";
-
-interface Props {
-  handleDeleteInventoryProduct: (itemId: number) => void;
-  close: () => void;
-  values: InventoryProductI;
-}
+import { DeleteInventoryProductModalProps } from "../types/inventory.types";
 
 export const DeleteInventoryProductModal = ({
   handleDeleteInventoryProduct,
   close,
   values,
-}: Props) => (
+}: DeleteInventoryProductModalProps) => (
   <ConfirmDeleteModal
     title="¿Quitar producto del inventario?"
     message={

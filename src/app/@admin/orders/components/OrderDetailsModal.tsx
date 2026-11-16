@@ -8,15 +8,11 @@ import {
   ExclamationTriangleIcon,
   PrinterIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { mutate } from "swr";
-import { Button, Heading, ToastContent } from "@/shared/ui";
-import { useCustomMutation } from "@/shared/api";
-import { useToast } from "@/shared/overlay-manager";
+import { Button, Heading } from "@/shared/ui";
 import { PrintableReceipt } from "@/shared/components/PrintableReceipt";
-import { useOrderDetails } from "../hooks";
+import { useOrderDetailsModal } from "../hooks";
 import { OrderI } from "../types/order.types";
-import { getOrderStatusConfig, QUOTATION_BADGE } from "../utils";
+import { QUOTATION_BADGE } from "../utils";
 
 interface OrderDetailsModalProps {
   order: OrderI;
@@ -24,51 +20,20 @@ interface OrderDetailsModalProps {
 }
 
 export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
-  const status = getOrderStatusConfig(order.status);
-  const createdAt = new Date(order.createdAt).toLocaleString("es-MX");
-  const { items, loading, error } = useOrderDetails(order.id);
-  const isQuotation = order.type === "QUOTATION";
-  // Receipts are only for sales; quotations aren't a sale yet.
-  const canPrintReceipt = order.type === "ORDER";
-  const [confirmingConversion, setConfirmingConversion] = useState(false);
-  const { open: openToast } = useToast();
-
-  const { patch, loading: converting } = useCustomMutation({
-    url: "/orders",
-    // Revalidate every orders list (all pages and type filters).
-    mutateKey: [],
-    onSuccess: () => {
-      mutate(
-        (key) => typeof key === "string" && key.startsWith("/orders"),
-      );
-      openToast({
-        type: "success",
-        content: (
-          <ToastContent
-            title="Éxito"
-            subtitle={`La cotización ${order.orderNumber} ahora es una venta`}
-          />
-        ),
-      });
-      close();
-    },
-    onError: () => {
-      openToast({
-        type: "error",
-        content: (
-          <ToastContent
-            title="Error"
-            subtitle="No se pudo convertir la cotización en venta"
-          />
-        ),
-      });
-    },
-  });
-
-  const handleConvertToSale = () =>
-    patch(`/orders/type/${order.id}`, { type: "ORDER" }).catch(() => {
-      // Error toast is shown by onError.
-    });
+  const {
+    status,
+    createdAt,
+    items,
+    receiptItems,
+    loading,
+    error,
+    isQuotation,
+    canPrintReceipt,
+    confirmingConversion,
+    setConfirmingConversion,
+    converting,
+    handleConvertToSale,
+  } = useOrderDetailsModal(order, close);
 
   return (
     <div className="flex flex-col gap-5">
@@ -265,11 +230,7 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
           orderNumber={order.orderNumber}
           date={new Date(order.createdAt)}
           clientName={order.clientName}
-          items={items.map((item) => ({
-            name: item.name,
-            quantity: item.quantity,
-            price: Number(item.price),
-          }))}
+          items={receiptItems}
           total={Number(order.totalAmount)}
         />
       )}

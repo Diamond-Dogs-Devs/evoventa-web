@@ -78,8 +78,6 @@ export const ClientForm = ({
               type="submit"
               color="primary"
               variant="fill"
-              // Create needs data first; edit keeps the original behavior
-              // (always enabled).
               disabled={
                 isSubmitting || (mode === "create" && (!dirty || !isValid))
               }

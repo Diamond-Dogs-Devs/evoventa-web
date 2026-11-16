@@ -8,7 +8,6 @@ export const ADD_CLIENTS_FORM_INITIAL_VALUES = {
   rfc: "",
 };
 
-/** Header and submit texts of the client side panel, per mode. */
 export const CLIENT_FORM_COPY: Record<
   ClientFormMode,
   { title: string; subtitle: string; submit: string }

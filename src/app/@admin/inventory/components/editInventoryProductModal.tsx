@@ -2,7 +2,10 @@
 
 import { Form, Formik } from "formik";
 import { Button, Card } from "@/shared/ui";
-import { InventoryProductI } from "../types/inventory.types";
+import {
+  EditInventoryProductModalProps,
+  EditInventoryProductValues,
+} from "../types/inventory.types";
 import { editInventoryProductSchema } from "../schemas/addInventory";
 import {
   DEFAULT_CRITICAL_STOCK,
@@ -10,26 +13,11 @@ import {
 } from "../utils/constants";
 import { StockFields } from "./StockFields";
 
-export interface EditInventoryProductValues {
-  quantity: number;
-  lowStock: number;
-  criticalStock: number;
-}
-
-interface Props {
-  inventoryProduct: InventoryProductI;
-  handleEditInventoryProduct: (
-    itemId: number,
-    values: EditInventoryProductValues,
-  ) => void;
-  close: () => void;
-}
-
 export const EditInventoryProductModal = ({
   inventoryProduct,
   handleEditInventoryProduct,
   close,
-}: Props) => {
+}: EditInventoryProductModalProps) => {
   const product = inventoryProduct.product;
 
   return (

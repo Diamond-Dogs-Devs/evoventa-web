@@ -1,47 +1,19 @@
 "use client";
 
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import {
-  EntityCard,
-  EntityCardBadge,
-  getInitials,
-} from "@/shared/components/EntityCard";
-import { UserI } from "../types/user.types";
-
-interface UserCardProps {
-  user: UserI;
-  onEdit: (user: UserI) => void;
-  onDelete: (user: UserI) => void;
-}
+import { EntityCard } from "@/shared/components/EntityCard";
+import { useUserCard } from "../hooks/useUserCard";
+import { UserCardProps } from "../types/user.types";
 
 export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
-  const isAdmin = user.role === "ADMIN";
-  const badges: EntityCardBadge[] = [
-    {
-      label: isAdmin ? "Administrador" : "Empleado",
-      tone: isAdmin ? "blue" : "gray",
-    },
-  ];
-  if (user.isActive === false) badges.push({ label: "Inactivo", tone: "red" });
+  const { media, lines, badges, footer } = useUserCard(user);
 
   return (
     <EntityCard
-      media={{ alt: user.name, initials: getInitials(user.name) || "?" }}
+      media={media}
       title={user.name}
-      lines={[
-        { text: user.email, tone: "muted" },
-        { text: user.telephone },
-      ]}
+      lines={lines}
       badges={badges}
-      footer={{
-        primary: user.employeeNumber,
-        primaryTitle: "Número de empleado",
-        secondary: user.createdAt
-          ? format(new Date(user.createdAt), "d MMM yyyy", { locale: es })
-          : undefined,
-        secondaryTitle: "Fecha de alta",
-      }}
+      footer={footer}
       onEdit={() => onEdit(user)}
       onDelete={() => onDelete(user)}
       editLabel={`Editar a ${user.name}`}

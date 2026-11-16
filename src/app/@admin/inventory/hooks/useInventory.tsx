@@ -10,16 +10,10 @@ import {
   ProductI,
   InventoryProductI,
   InventoryItemFormI,
+  EditInventoryProductValues,
+  ItemLike,
 } from "../types/inventory.types";
-import type { EditInventoryProductValues } from "../components/editInventoryProductModal";
 import { DEFAULT_CRITICAL_STOCK, DEFAULT_LOW_STOCK } from "../utils/constants";
-
-type ItemLike = {
-  productId: string | number;
-  quantity: number | string;
-  lowStock?: number | string;
-  criticalStock?: number | string;
-};
 
 const toItemPayload = (item: ItemLike): InventoryItemFormI => ({
   productId: String(item.productId),

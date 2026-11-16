@@ -3,11 +3,8 @@
 import { ShoppingBagIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/shared/ui";
 import { InventoryProductI } from "../types/inventory.types";
-import {
-  PRODUCT_STATUS_BADGE_CLASSES,
-  getProductStatus,
-  isProductStatusSellable,
-} from "@/shared/utils/productStatus";
+import { PRODUCT_STATUS_BADGE_CLASSES } from "@/shared/utils/productStatus";
+import { useInventoryProductCard } from "../hooks/useInventoryProductCard";
 
 interface InventoryProductCardProps {
   inventoryProduct: InventoryProductI;
@@ -18,16 +15,8 @@ export function InventoryProductCard({
   inventoryProduct: ip,
   onDelete,
 }: InventoryProductCardProps) {
-  const product = ip.product;
-  const status = getProductStatus(product?.status);
-  const isOutOfStock =
-    ip.quantity === 0 || !isProductStatusSellable(product?.status);
-
-  const stockColor = isOutOfStock
-    ? "bg-red-100 text-red-600"
-    : ip.quantity <= 5
-      ? "bg-yellow-100 text-yellow-700"
-      : "bg-green-100 text-green-700";
+  const { product, status, stockColor, stockLabel, formattedPrice, name } =
+    useInventoryProductCard(ip);
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2 hover:shadow-md transition-shadow">
@@ -52,7 +41,7 @@ export function InventoryProductCard({
           className="font-semibold text-sm text-gray-800 truncate"
           title={product?.name}
         >
-          {product?.name ?? `Producto #${ip.productId}`}
+          {name}
         </p>
         <p className="text-xs text-gray-500 truncate">
           {product?.brand ?? "—"}
@@ -65,7 +54,7 @@ export function InventoryProductCard({
           <span
             className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${stockColor}`}
           >
-            {ip.quantity === 0 ? "Sin stock" : `Stock: ${ip.quantity}`}
+            {stockLabel}
           </span>
           {status && (
             <span
@@ -81,9 +70,7 @@ export function InventoryProductCard({
 
       <div className="pt-2 border-t border-gray-100">
         <span className="font-bold text-base text-gray-900">
-          {product?.salePrice != null
-            ? `$${Number(product.salePrice).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
-            : "—"}
+          {formattedPrice}
         </span>
       </div>
 

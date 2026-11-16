@@ -9,16 +9,8 @@ import {
   ADD_PRODUCT_TO_INVENTORY_INITIAL_VALUES,
   EMPTY_INVENTORY_ITEM,
 } from "../utils/constants";
-import { ProductI } from "../types/inventory.types";
+import { AddProductToInventoryModalProps } from "../types/inventory.types";
 import { StockFields } from "./StockFields";
-
-interface Props {
-  handleAddProductToInventory: (values: FormikValues) => void;
-  close: () => void;
-  allProducts: ProductI[];
-  inventoryName: string;
-  initialProductId?: string;
-}
 
 export const AddProductToInventoryModal = ({
   handleAddProductToInventory,
@@ -26,7 +18,7 @@ export const AddProductToInventoryModal = ({
   allProducts,
   inventoryName,
   initialProductId,
-}: Props) => {
+}: AddProductToInventoryModalProps) => {
   const productOptions = [
     { value: "", label: "Selecciona un producto" },
     ...allProducts.map((p) => ({

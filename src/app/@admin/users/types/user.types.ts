@@ -1,3 +1,5 @@
+import type { FormikValues } from "formik";
+
 export type UserRole = "ADMIN" | "USER";
 
 export interface UserI {
@@ -9,4 +11,19 @@ export interface UserI {
   role?: UserRole;
   isActive?: boolean;
   createdAt?: string;
+}
+
+export interface UserCardProps {
+  user: UserI;
+  onEdit: (user: UserI) => void;
+  onDelete: (user: UserI) => void;
+}
+
+export type UserFormMode = "create" | "edit";
+
+export interface UserFormProps {
+  mode: UserFormMode;
+  initialValues?: FormikValues;
+  onSubmit: (values: FormikValues) => void | Promise<unknown>;
+  close: () => void;
 }

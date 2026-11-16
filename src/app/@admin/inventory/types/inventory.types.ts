@@ -1,3 +1,4 @@
+import type { FormikValues } from "formik";
 export interface InventoryI {
   id: number;
   name: string;
@@ -38,3 +39,43 @@ export interface InventoryItemFormI {
   lowStock: number;
   criticalStock: number;
 }
+
+export interface AddProductToInventoryModalProps {
+  handleAddProductToInventory: (values: FormikValues) => void;
+  close: () => void;
+  allProducts: ProductI[];
+  inventoryName: string;
+  initialProductId?: string;
+}
+
+export interface DeleteInventoryProductModalProps {
+  handleDeleteInventoryProduct: (itemId: number) => void;
+  close: () => void;
+  values: InventoryProductI;
+}
+
+export interface EditInventoryProductValues {
+  quantity: number;
+  lowStock: number;
+  criticalStock: number;
+}
+
+export interface EditInventoryProductModalProps {
+  inventoryProduct: InventoryProductI;
+  handleEditInventoryProduct: (
+    itemId: number,
+    values: EditInventoryProductValues,
+  ) => void;
+  close: () => void;
+}
+
+export interface StockFieldsProps {
+  prefix?: string;
+}
+
+export type ItemLike = {
+  productId: string | number;
+  quantity: number | string;
+  lowStock?: number | string;
+  criticalStock?: number | string;
+};
