@@ -1,12 +1,18 @@
 "use client";
 
-import { Layout, Button, Table, Heading } from "@/shared/ui";
+import { Button, Pagination } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 
 import { useUsers } from "./hooks";
-import { AddUserModal, DeleteUserModal, UpdateUserModal } from "./components";
+import {
+  AddUserModal,
+  DeleteUserModal,
+  UpdateUserModal,
+  UserCard,
+} from "./components";
 import { UserI } from "./types/user.types";
 import Page from "@/shared/components/Page";
+import { CardGrid } from "@/shared/components/CardGrid";
 
 const appConfig = {
   title: "Usuarios",
@@ -14,7 +20,6 @@ const appConfig = {
 };
 
 export default function UsersPage() {
-  const actions = ["edit", "delete"];
   const { open, close } = useModal();
 
   const {
@@ -24,7 +29,6 @@ export default function UsersPage() {
     totalPages,
     pageSize,
     onPaginationChange,
-    cols,
     handleCreateUser,
     handleDeleteUser,
     handleUpdateUser,
@@ -33,7 +37,7 @@ export default function UsersPage() {
 
   const handleOpenCreateModal = () => {
     open(<AddUserModal handleCreateUser={handleCreateUser} close={close} />, {
-      fullHeight: false,
+      position: "right",
     });
   };
 
@@ -44,7 +48,7 @@ export default function UsersPage() {
         close={close}
         values={values}
       />,
-      { fullHeight: false }
+      { position: "right" }
     );
   };
 
@@ -61,7 +65,7 @@ export default function UsersPage() {
 
   return (
     <Page title={appConfig.title}>
-      <div className="h-screen w-full">
+      <div className="flex flex-col gap-4 min-h-[calc(100vh-10rem)]">
         <div className="flex justify-end mt-2">
           <Button
             type="button"
@@ -75,29 +79,31 @@ export default function UsersPage() {
           </Button>
         </div>
 
-        {users.length !== 0 ? (
-          <div className="overflow-auto mt-10">
-            <Table
-              withPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              currentLimit={pageSize}
-              onPaginationChange={onPaginationChange}
-              data={users}
-              columns={cols}
-              path={(row) => `/users/${row.original.id}`}
-              loading={loading}
-              actions={actions}
+        <CardGrid
+          items={users}
+          loading={loading}
+          pageSize={pageSize}
+          emptyTitle="No hay usuarios agregados"
+          emptySubtitle='Agrega tu primer empleado con el botón "Agregar Usuario"'
+          renderItem={(user) => (
+            <UserCard
+              key={user.id}
+              user={user}
               onEdit={handleOpenEditModal}
               onDelete={handleOpenDeleteModal}
             />
-          </div>
-        ) : (
-          <div className="flex justify-center items-center">
-            <Heading variant="sectionHeadingCard">
-              No hay usuarios agregados
-            </Heading>
-          </div>
+          )}
+        />
+
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={(page) => onPaginationChange(page, pageSize)}
+            onPageSizeChange={(size) => onPaginationChange(1, size)}
+            pageSizeOptions={[10, 20, 50]}
+          />
         )}
       </div>
     </Page>

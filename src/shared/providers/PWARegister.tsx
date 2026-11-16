@@ -23,6 +23,27 @@ export function PWARegister() {
       return;
     }
 
+    // sw.js serves .js/.css cache-first. In `next dev` chunk names don't
+    // change between edits, so the worker would keep serving stale code.
+    // Only use it in production, and clean up any worker left from before.
+    if (process.env.NODE_ENV !== "production") {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) =>
+          Promise.all(registrations.map((r) => r.unregister())),
+        )
+        .then(() => caches.keys())
+        .then((keys) =>
+          Promise.all(
+            keys
+              .filter((key) => key.startsWith("evoventa-"))
+              .map((key) => caches.delete(key)),
+          ),
+        )
+        .catch(() => {});
+      return;
+    }
+
     const registerServiceWorker = async () => {
       try {
         const registration = await navigator.serviceWorker.register("/sw.js", {

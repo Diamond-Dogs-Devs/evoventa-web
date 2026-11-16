@@ -1,5 +1,26 @@
 import * as Yup from "yup";
 
+const positiveInt = Yup.number()
+  .typeError("Debe ser un número")
+  .positive("Debe ser mayor a 0")
+  .integer("Debe ser entero")
+  .required("Requerido");
+
+// Must match the API's InventoryItemDto: lowStock/criticalStock > 0 and
+// criticalStock <= lowStock.
+export const stockThresholdsShape = {
+  quantity: positiveInt,
+  lowStock: positiveInt,
+  criticalStock: positiveInt.max(
+    Yup.ref("lowStock"),
+    "No puede ser mayor al stock bajo",
+  ),
+};
+
+export const editInventoryProductSchema = Yup.object().shape(
+  stockThresholdsShape,
+);
+
 export const addInventorySchema = Yup.object().shape({
   name: Yup.string()
     .required("El nombre es requerido")
@@ -12,11 +33,7 @@ export const addInventorySchema = Yup.object().shape({
     .of(
       Yup.object().shape({
         id: Yup.string().required("Selecciona un producto"),
-        quantity: Yup.number()
-          .typeError("Debe ser un número")
-          .positive("Debe ser mayor a 0")
-          .integer("Debe ser entero")
-          .required("Requerido"),
+        ...stockThresholdsShape,
       }),
     )
     .min(1, "Agrega al menos un producto"),
@@ -27,11 +44,7 @@ export const addProductToInventorySchema = Yup.object().shape({
     .of(
       Yup.object().shape({
         productId: Yup.string().required("Selecciona un producto"),
-        quantity: Yup.number()
-          .typeError("Debe ser un número")
-          .positive("Debe ser mayor a 0")
-          .integer("Debe ser entero")
-          .required("Requerido"),
+        ...stockThresholdsShape,
       }),
     )
     .min(1, "Agrega al menos un producto"),

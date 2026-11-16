@@ -5,9 +5,11 @@ import {
   PrinterIcon,
   ArrowLeftIcon,
   CheckCircleIcon,
+  DocumentTextIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import type { CartItemI, ClientI } from "../types/sales.types";
+import { PrintableReceipt } from "@/shared/components/PrintableReceipt";
 
 interface Props {
   cartItems: CartItemI[];
@@ -15,6 +17,8 @@ interface Props {
   total: number;
   orderLoading: boolean;
   onConfirm: () => void;
+  quotationLoading: boolean;
+  onSaveQuotation: () => void;
   onBack: () => void;
 }
 
@@ -24,8 +28,11 @@ export function CheckoutScreen({
   total,
   orderLoading,
   onConfirm,
+  quotationLoading,
+  onSaveQuotation,
   onBack,
 }: Props) {
+  const busy = orderLoading || quotationLoading;
   const handlePrint = () => window.print();
 
   const now = new Date();
@@ -35,66 +42,16 @@ export function CheckoutScreen({
   return (
     <>
       {/* Receipt — visible only on print */}
-      <div id="sales-receipt" className="hidden print:block">
-        <div
-          style={{ margin: "0 auto", fontFamily: "monospace", fontSize: "24px" }}
-        >
-          <div style={{ textAlign: "center", marginBottom: "12px" }}>
-            <img src="/olyve.jpeg" alt="" className="grayscale" />
-            <Heading variant="heading" className="text-s font-bold">
-              RECIBO DE VENTA
-            </Heading>
-            <Heading variant="body" className="mt-1">
-              {dateStr} · {timeStr}
-            </Heading>
-          </div>
-          {selectedClient && (
-            <Heading variant="body" className="mb-2">
-              Cliente: <strong>{selectedClient.name}</strong>
-            </Heading>
-          )}
-          <div
-            style={{
-              borderTop: "1px solid black",
-              borderBottom: "1px solid black",
-              margin: "8px 0",
-            }}
-          >
-            {cartItems.map(({ inventoryProduct: ip, quantity }) => (
-              <div
-                key={ip.productId}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "4px",
-                }}
-              >
-                <Heading variant="body" className="!text-inherit">
-                  {ip.product?.name ?? `#${ip.productId}`} ×{quantity}
-                </Heading>
-                <Heading variant="body" className="!text-inherit">
-                  ${((ip.product?.salePrice ?? 0) * quantity).toFixed(2)}
-                </Heading>
-              </div>
-            ))}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontWeight: "bold",
-              fontSize: "48px",
-            }}
-          >
-            <Heading variant="body" className="">
-              TOTAL
-            </Heading>
-            <Heading variant="body" className="">
-              ${total.toFixed(2)}
-            </Heading>
-          </div>
-        </div>
-      </div>
+      <PrintableReceipt
+        date={now}
+        clientName={selectedClient?.name}
+        items={cartItems.map(({ inventoryProduct: ip, quantity }) => ({
+          name: ip.product?.name ?? `#${ip.productId}`,
+          quantity,
+          price: Number(ip.product?.salePrice ?? 0),
+        }))}
+        total={total}
+      />
 
       {/* Screen layout */}
       <div className="w-full max-w-2xl mx-auto w-full flex flex-col gap-6 print:hidden">
@@ -192,10 +149,23 @@ export function CheckoutScreen({
             size="md"
             className="flex-1 justify-center gap-2"
             onClick={handlePrint}
-            disabled={orderLoading}
+            disabled={busy}
           >
             <PrinterIcon className="h-4 w-4" />
             Imprimir recibo
+          </Button>
+          <Button
+            type="button"
+            variant="border"
+            color="primary"
+            size="md"
+            className="flex-1 justify-center gap-2"
+            onClick={onSaveQuotation}
+            loading={quotationLoading}
+            disabled={busy}
+          >
+            <DocumentTextIcon className="h-4 w-4" />
+            {quotationLoading ? "Guardando..." : "Guardar cotización"}
           </Button>
           <Button
             type="button"
@@ -205,7 +175,7 @@ export function CheckoutScreen({
             className="flex-1 justify-center gap-2"
             onClick={onConfirm}
             loading={orderLoading}
-            disabled={orderLoading}
+            disabled={busy}
           >
             <CheckCircleIcon className="h-4 w-4" />
             {orderLoading ? "Procesando..." : "Finalizar compra"}

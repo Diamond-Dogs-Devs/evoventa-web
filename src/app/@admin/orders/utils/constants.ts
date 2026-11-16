@@ -15,6 +15,10 @@ export const ORDER_STATUS_CONFIG: Record<string, OrderStatusConfig> = {
     label: "Pendiente",
     badgeClassName: "bg-yellow-100 !text-yellow-700",
   },
+  PAID: {
+    label: "Pagada",
+    badgeClassName: "bg-green-100 !text-green-700",
+  },
   CONFIRMED: {
     label: "Confirmada",
     badgeClassName: "bg-blue-100 !text-blue-700",
@@ -58,3 +62,18 @@ export const getOrderStatusConfig = (
 
   return { ...DEFAULT_ORDER_STATUS_CONFIG, label: status };
 };
+
+export type OrderTypeT = "ORDER" | "QUOTATION";
+
+export const QUOTATION_BADGE = {
+  label: "Cotización",
+  badgeClassName: "bg-purple-100 !text-purple-700",
+};
+
+export type OrderTypeFilterT = "" | OrderTypeT;
+
+export const ORDER_TYPE_FILTERS: { value: OrderTypeFilterT; label: string }[] = [
+  { value: "", label: "Todas" },
+  { value: "ORDER", label: "Ventas" },
+  { value: "QUOTATION", label: "Cotizaciones" },
+];

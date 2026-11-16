@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Heading } from "@/shared/ui";
 import { OrderI } from "../types/order.types";
-import { getOrderStatusConfig } from "../utils";
+import { getOrderStatusConfig, QUOTATION_BADGE } from "../utils";
 
 interface OrderCardProps {
   order: OrderI;
@@ -27,12 +27,22 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
         <Heading variant="titleCard" className="!border-0 !pb-0 !mb-0 !text-left">
           {order.orderNumber}
         </Heading>
-        <Heading
-          variant="body"
-          className={`text-xs font-medium px-1.5 py-0.5 rounded-full shrink-0 ${status.badgeClassName}`}
-        >
-          {status.label}
-        </Heading>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          {order.type === "QUOTATION" && (
+            <Heading
+              variant="body"
+              className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${QUOTATION_BADGE.badgeClassName}`}
+            >
+              {QUOTATION_BADGE.label}
+            </Heading>
+          )}
+          <Heading
+            variant="body"
+            className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${status.badgeClassName}`}
+          >
+            {status.label}
+          </Heading>
+        </div>
       </div>
 
       <div className="flex items-center gap-1.5 text-sm !text-gray-600">

@@ -2,7 +2,7 @@
 
 import React from "react";
 
-interface ProductGridProps<T> {
+interface CardGridProps<T> {
   items: T[];
   loading: boolean;
   pageSize: number;
@@ -11,14 +11,14 @@ interface ProductGridProps<T> {
   renderItem: (item: T) => React.ReactNode;
 }
 
-export function ProductGrid<T>({
+export function CardGrid<T>({
   items,
   loading,
   pageSize,
   emptyTitle,
   emptySubtitle,
   renderItem,
-}: ProductGridProps<T>) {
+}: CardGridProps<T>) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
