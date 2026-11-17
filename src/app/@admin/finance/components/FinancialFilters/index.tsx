@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DashboardCard } from "@/shared/components/DashboardCard";
 
 import { FinancialFiltersProps } from "../../interfaces";
+import { Button } from "@/shared/ui/src";
 
 const FinancialFilters = ({
   period,
@@ -68,14 +69,14 @@ const FinancialFilters = ({
           />
         </div>
 
-        <button
+        <Button
           type="button"
           onClick={onSearch}
           disabled={loading}
           className="finance-search-button"
         >
           {loading ? "Consultando..." : "Mostrar resultados"}
-        </button>
+        </Button>
       </div>
     </DashboardCard>
   );

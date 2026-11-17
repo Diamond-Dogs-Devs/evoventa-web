@@ -4,6 +4,7 @@ import { DashboardCard } from "@/shared/components/DashboardCard";
 import { FinancialProjectionsTableProps } from "../../interfaces";
 import { FinancialTrendFilter } from "../../types";
 import { useFinancialProyectionsTable } from "./hooks/useFinancialProyectionsTable";
+import { Button } from "@/shared/ui/src";
 
 const FinancialProjectionsTable = ({
   salesData,
@@ -28,15 +29,15 @@ const FinancialProjectionsTable = ({
     >
       <div className="finance-table-toolbar">
         <div className="finance-tabs">
-          <button
+          <Button
             type="button"
             className={mode === "SALES" ? "finance-tab-active" : "finance-tab"}
             onClick={() => handleModeChange("SALES")}
           >
             Proyección de ventas
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
             className={
               mode === "REVENUE" ? "finance-tab-active" : "finance-tab"
@@ -44,7 +45,7 @@ const FinancialProjectionsTable = ({
             onClick={() => handleModeChange("REVENUE")}
           >
             Proyección de ingresos
-          </button>
+          </Button>
         </div>
 
         <select
