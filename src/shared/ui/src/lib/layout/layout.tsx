@@ -11,6 +11,7 @@ import {
   UserCircleIcon,
   ArchiveBoxIcon,
   ArrowLeftEndOnRectangleIcon,
+  DocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/shared/providers";
 
@@ -25,6 +26,7 @@ const navigation = [
   { name: "Users", href: "/users", icon: BellIcon },
   { name: "Products", href: "/products", icon: Bars3Icon },
   { name: "Inventario", href: "/inventory", icon: ArchiveBoxIcon },
+  { name: "Finanzas", href: "/finance", icon: DocumentCheckIcon },
 ];
 
 function classNames(...classes: string[]) {

@@ -4,14 +4,18 @@ import { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <SWRProvider>
-      <ModalProvider>
-        <AuthProvider>
-          <Layout>
-            <main className="app">{children}</main>
-          </Layout>
-        </AuthProvider>
-      </ModalProvider>
-    </SWRProvider>
+    <html lang="es">
+      <body>
+        <SWRProvider>
+          <ModalProvider>
+            <AuthProvider>
+              <Layout>
+                <main className="app">{children}</main>
+              </Layout>
+            </AuthProvider>
+          </ModalProvider>
+        </SWRProvider>
+      </body>
+    </html>
   );
 }
