@@ -76,7 +76,8 @@ export function ProductGrid({
                   options={[
                     { value: "", label: "Todos los productos" },
                     { value: "AVAILABLE", label: "Disponibles" },
-                    { value: "UNAVAILABLE", label: "No disponibles" },
+                    { value: "OUT_OF_STOCK", label: "Agotados" },
+                    { value: "DISCONTINUED", label: "Descontinuados" },
                   ]}
                 />
               </div>

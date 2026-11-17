@@ -10,7 +10,8 @@ import { Layout, Button } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 import { Pagination } from "@/shared/ui";
 
-import { useProducts, useGlobalBarcodeScan } from "./hooks";
+import { useProducts } from "./hooks";
+import { useGlobalBarcodeScan } from "@/shared/hooks/useGlobalBarcodeScan";
 import { ADD_PRODUCT_FORM_INITIAL_VALUES } from "./utils/constants";
 
 import {
@@ -18,11 +19,11 @@ import {
   DeleteProductModal,
   UpdateProductModal,
   ProductCard,
-  ProductGrid,
 } from "./components";
 
 import { ProductI } from "./types/product.types";
 import Page from "@/shared/components/Page";
+import { CardGrid } from "@/shared/components/CardGrid";
 
 const appConfig = {
   title: "Productos",
@@ -56,7 +57,8 @@ export default function ProductsPage() {
         handleCreateProduct={handleCreateProduct}
         close={close}
         initialValues={initialValues}
-      />
+      />,
+      { position: "right" }
     );
   };
 
@@ -66,7 +68,8 @@ export default function ProductsPage() {
         handleUpdateProduct={handleUpdateProduct}
         close={close}
         values={values}
-      />
+      />,
+      { position: "right" }
     );
   };
 
@@ -123,7 +126,7 @@ export default function ProductsPage() {
           </Button>
         </div>
 
-        <ProductGrid
+        <CardGrid
           items={products}
           loading={loading}
           pageSize={pageSize}

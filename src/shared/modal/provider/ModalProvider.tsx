@@ -86,7 +86,7 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
           onClose={close}
           fullHeight={modal.fullHeight}
         >
-          <div className="relative">{modal.content}</div>
+          <div className="relative h-full">{modal.content}</div>
         </Modal>
       )}
     </ModalContext.Provider>

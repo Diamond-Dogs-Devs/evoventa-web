@@ -78,3 +78,22 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+/*
+ * Receipt printing (shared/components/PrintableReceipt): while a receipt is
+ * mounted, print only the receipt and hide the rest of the page (layout,
+ * lists, modals rendered in other portals).
+ */
+@media print {
+  /*
+   * Zero page margins: the browser has no room left for its own header and
+   * footer (date/time, page title, URL), so they don't print on the receipt.
+   * The receipt adds its own padding instead.
+   */
+  @page {
+    margin: 0;
+  }
+
+  body:has(> [data-print-receipt]) > :not([data-print-receipt]) {
+    display: none !important;
+  }
+}

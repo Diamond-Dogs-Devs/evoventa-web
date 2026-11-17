@@ -1,15 +1,26 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useCustomSWR, fetcher } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
 import { OrderI, OrderUserI, OrderClientI } from "../types/order.types";
+import { OrderTypeFilterT } from "../utils";
 
 export const useOrders = () => {
   const { open } = useToast();
   const { currentPage, pageSize, onPaginationChange } = usePagination(10);
 
-  const ordersKey = `/orders?page=${currentPage}&limit=${pageSize}`;
+  const [typeFilter, setTypeFilterState] = useState<OrderTypeFilterT>("");
+
+  // GET /orders already filters by ?type=ORDER|QUOTATION.
+  const ordersKey = `/orders?page=${currentPage}&limit=${pageSize}${
+    typeFilter ? `&type=${typeFilter}` : ""
+  }`;
+
+  const setTypeFilter = (type: OrderTypeFilterT) => {
+    setTypeFilterState(type);
+    onPaginationChange(1, pageSize);
+  };
 
   const { data, loading, error } = useCustomSWR<{
     data: OrderI[];
@@ -69,5 +80,7 @@ export const useOrders = () => {
     currentPage,
     pageSize,
     onPaginationChange,
+    typeFilter,
+    setTypeFilter,
   };
 };

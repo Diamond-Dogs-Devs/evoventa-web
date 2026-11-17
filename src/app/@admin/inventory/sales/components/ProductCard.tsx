@@ -7,6 +7,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button, Heading } from "@/shared/ui";
 import { InventoryProductI } from "../types/sales.types";
+import {
+  getProductStatus,
+  isProductStatusSellable,
+} from "@/shared/utils/productStatus";
 
 interface ProductCardProps {
   inventoryProduct: InventoryProductI;
@@ -20,8 +24,9 @@ export function ProductCard({
   onAdd,
 }: ProductCardProps) {
   const availableStock = ip.quantity;
-  const isOutOfStock =
-    availableStock === 0 || ip.product?.status === "UNAVAILABLE";
+  const sellable = isProductStatusSellable(ip.product?.status);
+  // Agotado / Descontinuado can't be sold even if the inventory has units.
+  const isOutOfStock = availableStock === 0 || !sellable;
   const isMaxReached = quantityInCart >= availableStock;
 
   return (
@@ -69,7 +74,11 @@ export function ProductCard({
                   : "bg-green-100 !text-green-700"
             }`}
           >
-            {isOutOfStock ? "Sin stock" : `Stock: ${availableStock}`}
+            {!sellable
+              ? (getProductStatus(ip.product?.status)?.label ?? "No disponible")
+              : isOutOfStock
+                ? "Sin stock"
+                : `Stock: ${availableStock}`}
           </Heading>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import type { FormikValues } from "formik";
+
 export interface ProductI {
   id: number;
   name: string;
@@ -11,4 +13,18 @@ export interface ProductI {
   category: string;
   status: string;
   imageUrl: string;
+}
+
+export type ProductFormMode = "create" | "edit";
+
+export interface ProductFormProps {
+  mode: ProductFormMode;
+  initialValues?: FormikValues | null;
+  onSubmit: (values: FormikValues) => void | Promise<void>;
+  close: () => void;
+}
+
+export interface ProfitHintProps {
+  sale: number;
+  purchase: number;
 }

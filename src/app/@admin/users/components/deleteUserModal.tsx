@@ -1,4 +1,4 @@
-import { Button, Heading } from "@/shared/ui";
+import { ConfirmDeleteModal } from "@/shared/components/ConfirmDeleteModal";
 
 interface DeleteUserModalProps {
   handleDeleteUser: (id: number) => void;
@@ -9,39 +9,12 @@ interface DeleteUserModalProps {
   };
 }
 
-export const DeleteUserModal = ({
-  handleDeleteUser,
-  close,
-  values,
-}: DeleteUserModalProps) => {
-  const { id, name } = values;
-  const handleConfirmDelete = () => {
-    handleDeleteUser(id);
-    close();
-  };
-
-  return (
-    <div>
-      <Heading
-        variant="sectionHeadingCard"
-        className="text-error-100 text-center"
-      >
-        ¿Estás seguro de que quieres{" "}
-        <span className="text-title-caution">ELIMINAR</span> {name}?
-      </Heading>
-      <div className="flex justify-end mt-14">
-        <Button
-          onClick={close}
-          variant="fill"
-          color="primary"
-          className="mr-2"
-        >
-          Cancelar
-        </Button>
-        <Button onClick={handleConfirmDelete} variant="fill" color="secondary">
-          Eliminar Usuario
-        </Button>
-      </div>
-    </div>
-  );
-};
+export const DeleteUserModal = ({ handleDeleteUser, close, values }: DeleteUserModalProps) => (
+  <ConfirmDeleteModal
+    title="¿Eliminar usuario?"
+    itemName={values.name}
+    confirmLabel="Eliminar usuario"
+    onConfirm={() => handleDeleteUser(values.id)}
+    close={close}
+  />
+);
