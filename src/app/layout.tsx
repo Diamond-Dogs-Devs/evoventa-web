@@ -27,11 +27,9 @@ export default async function RootLayout({
 
   const isLoggin = await checkUser();
   return (
-    <html lang="es">
-      <body>
-        <PWARegister />
-        {isLoggin ? admin : anonym}
-      </body>
-    </html>
+    <>
+      <PWARegister />
+      {isLoggin ? admin : anonym}
+    </>
   );
 }
