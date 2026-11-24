@@ -4,6 +4,7 @@ import {
   ProductHealth,
 } from "@/shared/services/finance/domain";
 import { useMemo } from "react";
+import { formatMoney, formatNumber } from "@/shared/utils/format";
 
 export const useFinanceMapper = () => {
   const mapProjectionColumns = (): DataColumn<FinancialProjectionRow>[] => [
@@ -28,7 +29,7 @@ export const useFinanceMapper = () => {
       subtitle: "Unidades vendidas",
       render: (item) => (
         <span className="font-medium text-slate-700">
-          {item.currentSales.toLocaleString("es-MX")}
+          {formatNumber(item.currentSales, 0)}
         </span>
       ),
     },
@@ -38,10 +39,7 @@ export const useFinanceMapper = () => {
       subtitle: "Unidades / mes",
       render: (item) => (
         <span>
-          {item.averageMonthlySales.toLocaleString("es-MX", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {formatNumber(item.averageMonthlySales)}
         </span>
       ),
     },
@@ -78,7 +76,7 @@ export const useFinanceMapper = () => {
           }
         >
           {item.trendPercentage > 0 ? "+" : ""}
-          {item.trendPercentage.toFixed(2)}%
+          {formatNumber(item.trendPercentage)}%
         </span>
       ),
     },
@@ -98,11 +96,7 @@ export const useFinanceMapper = () => {
       subtitle: "Próximo mes",
       render: (item) => (
         <span className="font-semibold text-slate-800">
-          $
-          {item.projectedRevenue.toLocaleString("es-MX", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {formatMoney(item.projectedRevenue)}
         </span>
       ),
     },
@@ -112,10 +106,7 @@ export const useFinanceMapper = () => {
       subtitle: "Variabilidad de ventas",
       render: (item) => (
         <span>
-          {item.variance.toLocaleString("es-MX", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {formatNumber(item.variance)}
         </span>
       ),
     },
@@ -125,10 +116,7 @@ export const useFinanceMapper = () => {
       subtitle: "Desviación estándar",
       render: (item) => (
         <span>
-          {item.standardDeviation.toLocaleString("es-MX", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {formatNumber(item.standardDeviation)}
         </span>
       ),
     },

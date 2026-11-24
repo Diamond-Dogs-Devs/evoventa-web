@@ -7,7 +7,7 @@ import { ToastContent } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 
 import { useGlobalBarcodeScan } from "@/shared/hooks/useGlobalBarcodeScan";
-import { ProductNotFoundModal } from "../components/ProductNotFoundModal";
+import { ProductNotFoundModal } from "../../components/productNotFoundModal";
 import { ProductNotInInventoryModal } from "../components/ProductNotInInventoryModal";
 import {
   InventoryI,

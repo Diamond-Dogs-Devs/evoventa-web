@@ -8,6 +8,8 @@ import {
 import { Heading } from "@/shared/ui";
 import { OrderI } from "../types/order.types";
 import { getOrderStatusConfig, QUOTATION_BADGE } from "../utils";
+import { StatusBadge } from "@/shared/components/StatusBadge";
+import { formatDate, formatMoney } from "@/shared/utils/format";
 
 interface OrderCardProps {
   order: OrderI;
@@ -16,7 +18,7 @@ interface OrderCardProps {
 
 export function OrderCard({ order, onClick }: OrderCardProps) {
   const status = getOrderStatusConfig(order.status);
-  const updatedAt = new Date(order.updatedAt).toLocaleDateString("es-MX");
+  const updatedAt = formatDate(order.updatedAt);
 
   return (
     <div
@@ -24,24 +26,12 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
       onClick={() => onClick?.(order)}
     >
       <div className="flex items-start justify-between gap-2">
-        <Heading variant="titleCard" className="!border-0 !pb-0 !mb-0 !text-left">
+        <Heading variant="titleCard" className="!border-0 !pb-0 !mb-0 !text-left min-w-0 break-all">
           {order.orderNumber}
         </Heading>
         <div className="flex flex-col items-end gap-1 shrink-0">
-          {order.type === "QUOTATION" && (
-            <Heading
-              variant="body"
-              className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${QUOTATION_BADGE.badgeClassName}`}
-            >
-              {QUOTATION_BADGE.label}
-            </Heading>
-          )}
-          <Heading
-            variant="body"
-            className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${status.badgeClassName}`}
-          >
-            {status.label}
-          </Heading>
+          {order.type === "QUOTATION" && <StatusBadge {...QUOTATION_BADGE} />}
+          <StatusBadge label={status.label} tone={status.tone} />
         </div>
       </div>
 
@@ -78,7 +68,7 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
           {updatedAt}
         </Heading>
         <Heading variant="body" className="font-bold text-base !text-gray-900">
-          ${Number(order.totalAmount).toFixed(2)}
+          {formatMoney(order.totalAmount)}
         </Heading>
       </div>
     </div>

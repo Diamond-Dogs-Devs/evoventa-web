@@ -3,7 +3,7 @@
 import { ShoppingBagIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/shared/ui";
 import { InventoryProductI } from "../types/inventory.types";
-import { PRODUCT_STATUS_BADGE_CLASSES } from "@/shared/utils/productStatus";
+import { StatusBadge } from "@/shared/components/StatusBadge";
 import { useInventoryProductCard } from "../hooks/useInventoryProductCard";
 
 interface InventoryProductCardProps {
@@ -15,7 +15,7 @@ export function InventoryProductCard({
   inventoryProduct: ip,
   onDelete,
 }: InventoryProductCardProps) {
-  const { product, status, stockColor, stockLabel, formattedPrice, name } =
+  const { product, status, stockTone, stockLabel, formattedPrice, name } =
     useInventoryProductCard(ip);
 
   return (
@@ -51,19 +51,9 @@ export function InventoryProductCard({
         </p>
 
         <div className="flex flex-wrap gap-1 pt-1">
-          <span
-            className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${stockColor}`}
-          >
-            {stockLabel}
-          </span>
+          <StatusBadge label={stockLabel} tone={stockTone} />
           {status && (
-            <span
-              className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
-                PRODUCT_STATUS_BADGE_CLASSES[status.tone]
-              }`}
-            >
-              {status.label}
-            </span>
+            <StatusBadge label={status.label} tone={status.tone} />
           )}
         </div>
       </div>

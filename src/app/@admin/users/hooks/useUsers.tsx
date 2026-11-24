@@ -3,6 +3,7 @@ import { useCustomSWR, fetcher, useCustomMutation } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
+import { useListSearch } from "@/shared/hooks/useListSearch";
 import { UserI } from "../types/user.types";
 import { USER_API_ERRORS } from "../utils/constants";
 
@@ -34,7 +35,10 @@ export const useUsers = () => {
   const { open } = useToast();
   const { currentPage, pageSize, onPaginationChange } = usePagination();
 
-  const usersKey = `/users?page=${currentPage}&limit=${pageSize}`;
+  const { search, onSearchChange, activeSearch, searchParam } =
+    useListSearch(() => onPaginationChange(1));
+
+  const usersKey = `/users?page=${currentPage}&limit=${pageSize}${searchParam}`;
 
   const { data, loading, error } = useCustomSWR<{
     data: UserI[];
@@ -126,5 +130,8 @@ export const useUsers = () => {
     currentPage,
     pageSize,
     onPaginationChange,
+    search,
+    onSearchChange,
+    activeSearch,
   };
 };

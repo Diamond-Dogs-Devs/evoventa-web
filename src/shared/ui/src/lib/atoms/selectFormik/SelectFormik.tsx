@@ -1,13 +1,19 @@
 "use client";
-import cn from "classnames";
 import { useField } from "formik";
 import {
   type FC,
   type InputHTMLAttributes,
   type ChangeEvent,
-  useState,
+  useId,
 } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Spinner } from "../spinner/spinner";
+import {
+  fieldBoxClass,
+  fieldControlClass,
+  fieldErrorClass,
+  fieldLabelClass,
+} from "../field/fieldStyles";
 
 export type OptionT = {
   value: string | number;
@@ -38,31 +44,10 @@ const SelectFormik: FC<
 }) => {
   const [field, { error, touched }, { setTouched }] = useField(name);
 
-  const [focus, setFocus] = useState(false);
-
-  const inputContainerClassName = cn(
-    "transition w-full cursor-default py-1.5 pl-3 rounded-lg border border-background-secondary text-left bg-transparent flex items-center pr-2",
-    {
-      "!pr-10": loading,
-      "!bg-gray-50 cursor-not-allowed": disabled,
-    },
-    className
-  );
-
-  const inputClassName = cn(
-    "border-none h-full w-full bg-transparent border-transparent focus:border-transparent focus:ring-0",
-    {
-      "cursor-not-allowed": disabled,
-    }
-  );
-
-  const labelClassName = cn(
-    "ease-in duration-100 ml-4 translate-y-2 w-fit text-sm text-primary-600 font-normal",
-    {
-      "!-translate-y-1 !bg-transparent": focus,
-      "!backdrop-blur-xl px-2": !focus,
-    }
-  );
+  const autoId = useId();
+  const selectId = props.id ?? `${name}-${autoId}`;
+  const errorId = `${selectId}-error`;
+  const showError = Boolean(touched && error);
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     field.onChange(e);
@@ -75,25 +60,35 @@ const SelectFormik: FC<
   const handleBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
     setTouched(true);
     field.onBlur(e);
-    setFocus(false);
   };
 
   return (
-    <div>
-      <div className={labelClassName}>
-        <label>{label}</label>
-      </div>
+    <div className="w-full">
+      {label && (
+        <label htmlFor={selectId} className={fieldLabelClass}>
+          {label}
+        </label>
+      )}
 
-      <div className={inputContainerClassName}>
+      <div
+        className={fieldBoxClass({
+          invalid: showError,
+          disabled,
+          className: `relative !pr-0 ${className}`,
+        })}
+      >
         <select
           {...field}
           {...props}
+          id={selectId}
           name={field.name}
           value={field.value}
+          disabled={disabled}
           onChange={handleChange}
-          onFocus={() => setFocus(true)}
           onBlur={handleBlur}
-          className={inputClassName}
+          className={`${fieldControlClass(disabled)} cursor-pointer pr-9`}
+          aria-invalid={showError || undefined}
+          aria-describedby={showError ? errorId : undefined}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -102,15 +97,16 @@ const SelectFormik: FC<
           ))}
         </select>
 
-        {loading && (
-          <div className="-mr-5">
-            <Spinner size="xs" />
-          </div>
-        )}
+        <span className="pointer-events-none absolute right-3 flex items-center gap-2 text-gray-400">
+          {loading && <Spinner size="md" />}
+          <ChevronDownIcon className="h-5 w-5" aria-hidden />
+        </span>
       </div>
 
-      {touched && error && (
-        <div className="error text-red-500 text-sm">{error}</div>
+      {showError && (
+        <p id={errorId} className={fieldErrorClass}>
+          {error}
+        </p>
       )}
     </div>
   );

@@ -2,13 +2,17 @@ import { useCustomSWR, fetcher, useCustomMutation } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
+import { useListSearch } from "@/shared/hooks/useListSearch";
 import { ClientFormValues, ClientI } from "../types/client.types";
 
 export const useClients = () => {
   const { open } = useToast();
   const { currentPage, pageSize, onPaginationChange } = usePagination();
 
-  const clientsKey = `/clients?page=${currentPage}&limit=${pageSize}`;
+  const { search, onSearchChange, activeSearch, searchParam } =
+    useListSearch(() => onPaginationChange(1));
+
+  const clientsKey = `/clients?page=${currentPage}&limit=${pageSize}${searchParam}`;
 
   const { data, loading, error } = useCustomSWR<{
     data: ClientI[];
@@ -95,5 +99,8 @@ export const useClients = () => {
     currentPage,
     pageSize,
     onPaginationChange,
+    search,
+    onSearchChange,
+    activeSearch,
   };
 };

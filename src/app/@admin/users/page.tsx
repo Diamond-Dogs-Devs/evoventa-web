@@ -12,6 +12,7 @@ import {
 } from "./components";
 import { UserI } from "./types/user.types";
 import Page from "@/shared/components/Page";
+import { SearchInput } from "@/shared/components/SearchInput";
 import { CardGrid } from "@/shared/components/CardGrid";
 
 const appConfig = {
@@ -29,6 +30,9 @@ export default function UsersPage() {
     totalPages,
     pageSize,
     onPaginationChange,
+    search,
+    onSearchChange,
+    activeSearch,
     handleCreateUser,
     handleDeleteUser,
     handleUpdateUser,
@@ -66,7 +70,12 @@ export default function UsersPage() {
   return (
     <Page title={appConfig.title}>
       <div className="flex flex-col gap-4 min-h-[calc(100vh-10rem)]">
-        <div className="flex justify-end mt-2">
+        <div className="flex flex-col-reverse gap-3 mt-2 sm:flex-row sm:items-center sm:justify-between">
+          <SearchInput
+            value={search}
+            onChange={onSearchChange}
+            placeholder="Buscar usuario por nombre o correo"
+          />
           <Button
             type="button"
             variant="border"
@@ -83,8 +92,14 @@ export default function UsersPage() {
           items={users}
           loading={loading}
           pageSize={pageSize}
-          emptyTitle="No hay usuarios agregados"
-          emptySubtitle='Agrega tu primer empleado con el botón "Agregar Usuario"'
+          emptyTitle={
+            activeSearch ? `Sin resultados para "${activeSearch}"` : "No hay usuarios agregados"
+          }
+          emptySubtitle={
+            activeSearch
+              ? "Prueba con otro nombre o correo"
+              : 'Agrega tu primer empleado con el botón "Agregar Usuario"'
+          }
           renderItem={(user) => (
             <UserCard
               key={user.id}

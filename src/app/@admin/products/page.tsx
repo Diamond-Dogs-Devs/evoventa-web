@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
 import { FormikValues } from "formik";
 
 import { QrCodeIcon } from "@heroicons/react/24/outline";
@@ -19,7 +18,9 @@ import {
   DeleteProductModal,
   UpdateProductModal,
   ProductCard,
+  ProductDetailsModal,
 } from "./components";
+import { BarcodeFromQuery } from "./components/BarcodeFromQuery";
 
 import { ProductI } from "./types/product.types";
 import Page from "@/shared/components/Page";
@@ -31,7 +32,6 @@ const appConfig = {
 };
 
 export default function ProductsPage() {
-  const router = useRouter();
   const { open, close } = useModal();
 
   const {
@@ -73,6 +73,17 @@ export default function ProductsPage() {
     );
   };
 
+  const handleOpenDetailsModal = (product: ProductI) => {
+    open(
+      <ProductDetailsModal
+        product={product}
+        close={close}
+        onEdit={handleOpenUpdateModal}
+      />,
+      { size: "small", fullHeight: false }
+    );
+  };
+
   const handleOpenDeleteModal = (values: ProductI) => {
     open(
       <DeleteProductModal
@@ -103,6 +114,9 @@ export default function ProductsPage() {
 
   return (
     <Page title={appConfig.title}>
+      <Suspense fallback={null}>
+        <BarcodeFromQuery onBarcode={setBarcodeSearch} />
+      </Suspense>
       <div className="flex flex-col gap-4 min-h-[calc(100vh-10rem)]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -138,7 +152,7 @@ export default function ProductsPage() {
               product={product}
               onEdit={handleOpenUpdateModal}
               onDelete={handleOpenDeleteModal}
-              onClick={(item) => router.push(`/products/${item.id}`)}
+              onClick={handleOpenDetailsModal}
             />
           )}
         />

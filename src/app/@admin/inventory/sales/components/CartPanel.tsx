@@ -13,6 +13,7 @@ import { Button, Card, Heading, InputFormik, SelectFormik } from "@/shared/ui";
 import { useModal } from "@/shared/providers";
 import { CartItemI, ClientI } from "../types/sales.types";
 import { StockExceededModal } from "./StockExceededModal";
+import { formatMoney } from "@/shared/utils/format";
 
 interface CartPanelProps {
   cartItems: CartItemI[];
@@ -238,7 +239,7 @@ export function CartPanel({
                   </div>
 
                   <Heading variant="body" className="text-sm font-bold !text-gray-800">
-                    ${((product?.salePrice ?? 0) * quantity).toFixed(2)}
+                    {formatMoney((product?.salePrice ?? 0) * quantity)}
                   </Heading>
                 </div>
 
@@ -246,7 +247,7 @@ export function CartPanel({
                   variant="body"
                   className="text-xs !text-gray-400 mt-1 text-right"
                 >
-                  ${(product?.salePrice ?? 0).toFixed(2)} c/u
+                  {formatMoney(product?.salePrice)} c/u
                 </Heading>
               </div>
             );
@@ -260,7 +261,7 @@ export function CartPanel({
             Total
           </Heading>
           <Heading variant="body" className="text-2xl font-bold !text-gray-900">
-            ${total.toFixed(2)}
+            {formatMoney(total)}
           </Heading>
         </div>
         <Button

@@ -9,8 +9,11 @@ import { Button, Heading } from "@/shared/ui";
 import { InventoryProductI } from "../types/sales.types";
 import {
   getProductStatus,
+  getStockTone,
   isProductStatusSellable,
 } from "@/shared/utils/productStatus";
+import { StatusBadge } from "@/shared/components/StatusBadge";
+import { formatMoney } from "@/shared/utils/format";
 
 interface ProductCardProps {
   inventoryProduct: InventoryProductI;
@@ -64,28 +67,22 @@ export function ProductCard({
           {ip.product?.brand ?? "—"}
         </Heading>
         <div className="flex items-center gap-1 mt-1">
-          <Heading
-            variant="body"
-            className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
-              isOutOfStock
-                ? "bg-red-100 !text-red-600"
-                : availableStock <= 5
-                  ? "bg-yellow-100 !text-yellow-700"
-                  : "bg-green-100 !text-green-700"
-            }`}
-          >
-            {!sellable
-              ? (getProductStatus(ip.product?.status)?.label ?? "No disponible")
-              : isOutOfStock
-                ? "Sin stock"
-                : `Stock: ${availableStock}`}
-          </Heading>
+          <StatusBadge
+            tone={getStockTone(availableStock, sellable)}
+            label={
+              !sellable
+                ? (getProductStatus(ip.product?.status)?.label ?? "No disponible")
+                : isOutOfStock
+                  ? "Sin stock"
+                  : `Stock: ${availableStock}`
+            }
+          />
         </div>
       </div>
 
       <div className="flex items-center justify-between mt-1">
         <Heading variant="body" className="font-bold text-base !text-gray-900">
-          ${(ip.product?.salePrice ?? 0).toFixed(2)}
+          {formatMoney(ip.product?.salePrice)}
         </Heading>
         <Button
           type="button"

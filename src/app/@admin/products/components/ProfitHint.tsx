@@ -1,3 +1,4 @@
+import { formatMoney } from "@/shared/utils/format";
 import { ProfitHintProps } from "../types/product.types";
 
 export const ProfitHint = ({ sale, purchase }: ProfitHintProps) => {
@@ -14,7 +15,7 @@ export const ProfitHint = ({ sale, purchase }: ProfitHintProps) => {
       }`}
     >
       {positive ? "Ganancia" : "Pérdida"} por unidad:{" "}
-      <span className="font-semibold">${Math.abs(profit).toFixed(2)}</span> (
+      <span className="font-semibold">{formatMoney(Math.abs(profit))}</span> (
       {margin.toFixed(1)}% de margen)
     </p>
   );

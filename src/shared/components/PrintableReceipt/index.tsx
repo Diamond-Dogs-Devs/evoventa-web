@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { formatDate, formatMoney, formatTime } from "@/shared/utils/format";
 
 export interface ReceiptItem {
   name: string;
@@ -45,8 +46,8 @@ export function PrintableReceipt({
 
   if (!mounted) return null;
 
-  const dateStr = date.toLocaleDateString("es-MX", { dateStyle: "long" });
-  const timeStr = date.toLocaleTimeString("es-MX", { timeStyle: "short" });
+  const dateStr = formatDate(date, "long");
+  const timeStr = formatTime(date);
 
   return createPortal(
     <div data-print-receipt className="hidden print:block text-black">
@@ -98,7 +99,7 @@ export function PrintableReceipt({
               <span>
                 {item.name} ×{item.quantity}
               </span>
-              <span>${(item.price * item.quantity).toFixed(2)}</span>
+              <span>{formatMoney(item.price * item.quantity)}</span>
             </div>
           ))}
         </div>
@@ -112,7 +113,7 @@ export function PrintableReceipt({
           }}
         >
           <span>TOTAL</span>
-          <span>${total.toFixed(2)}</span>
+          <span>{formatMoney(total)}</span>
         </div>
       </div>
     </div>,

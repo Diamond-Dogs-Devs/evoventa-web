@@ -2,7 +2,8 @@
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Formik, Form } from "formik";
-import { Button, Heading, SelectFormik, InputFormik } from "@/shared/ui";
+import { Button, Heading, SelectFormik } from "@/shared/ui";
+import { SearchInput } from "@/shared/components/SearchInput";
 import { useSales } from "../hooks/useSales";
 import { ProductCard } from "./ProductCard";
 
@@ -83,12 +84,11 @@ export function ProductGrid({
               </div>
 
               <div className="flex-1">
-                <InputFormik
-                  name="search"
-                  type="text"
-                  label="Buscar por nombre, marca o código"
+                <SearchInput
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={setSearch}
+                  placeholder="Buscar por nombre, marca o código"
+                  className="sm:!w-full"
                 />
               </div>
             </div>

@@ -10,17 +10,50 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button, Heading } from "@/shared/ui";
 import { PrintableReceipt } from "@/shared/components/PrintableReceipt";
+import {
+  BADGE_TONE_CLASSES,
+  StatusBadge,
+} from "@/shared/components/StatusBadge";
+import { formatMoney } from "@/shared/utils/format";
 import { useOrderDetailsModal } from "../hooks";
-import { OrderI } from "../types/order.types";
-import { QUOTATION_BADGE } from "../utils";
+import { OrderI, PendingActionT } from "../types/order.types";
+import {
+  EDITABLE_ORDER_STATUSES,
+  getOrderStatusConfig,
+  QUOTATION_BADGE,
+} from "../utils";
 
 interface OrderDetailsModalProps {
   order: OrderI;
   close: () => void;
 }
 
+const CONFIRMATIONS: Record<
+  PendingActionT,
+  { question: string; confirm: string; busy: string; tone: "purple" | "red" }
+> = {
+  convert: {
+    question: "¿Convertir esta cotización en venta?",
+    confirm: "Sí, convertir",
+    busy: "Convirtiendo...",
+    tone: "purple",
+  },
+  cancel: {
+    question: "¿Cancelar esta orden? Podrás reactivarla cambiando el estatus.",
+    confirm: "Sí, cancelar",
+    busy: "Cancelando...",
+    tone: "red",
+  },
+};
+
+const CONFIRMATION_TONE = {
+  purple: "border-purple-200 bg-purple-50 text-purple-900",
+  red: "border-red-200 bg-red-50 text-red-900",
+};
+
 export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
   const {
+    currentStatus,
     status,
     createdAt,
     items,
@@ -29,10 +62,12 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
     error,
     isQuotation,
     canPrintReceipt,
-    confirmingConversion,
-    setConfirmingConversion,
-    converting,
-    handleConvertToSale,
+    pendingAction,
+    setPendingAction,
+    savingStatus,
+    mutating,
+    handleStatusClick,
+    confirmActions,
   } = useOrderDetailsModal(order, close);
 
   return (
@@ -42,20 +77,8 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
           {order.orderNumber}
         </Heading>
         <div className="flex items-center gap-1.5 shrink-0">
-          {isQuotation && (
-            <Heading
-              variant="body"
-              className={`text-xs font-medium px-2 py-1 rounded-full ${QUOTATION_BADGE.badgeClassName}`}
-            >
-              {QUOTATION_BADGE.label}
-            </Heading>
-          )}
-          <Heading
-            variant="body"
-            className={`text-xs font-medium px-2 py-1 rounded-full ${status.badgeClassName}`}
-          >
-            {status.label}
-          </Heading>
+          {isQuotation && <StatusBadge size="md" {...QUOTATION_BADGE} />}
+          <StatusBadge size="md" label={status.label} tone={status.tone} />
         </div>
       </div>
 
@@ -94,6 +117,42 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
               {createdAt}
             </Heading>
           </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2 pt-2 border-t border-gray-200">
+        <p
+          id="order-status-label"
+          className="text-sm font-medium text-gray-500"
+        >
+          Cambiar estatus
+        </p>
+        <div
+          role="radiogroup"
+          aria-labelledby="order-status-label"
+          className="flex flex-wrap gap-2"
+        >
+          {EDITABLE_ORDER_STATUSES.map((value) => {
+            const config = getOrderStatusConfig(value);
+            const selected = currentStatus === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                disabled={mutating}
+                onClick={() => handleStatusClick(value)}
+                className={`rounded-full border px-3 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                  selected
+                    ? `${BADGE_TONE_CLASSES[config.tone]} border-transparent`
+                    : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {savingStatus === value ? "Guardando..." : config.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -144,14 +203,14 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
                     {item.name}
                   </Heading>
                   <Heading variant="body" className="text-xs !text-gray-400">
-                    {item.quantity} x ${Number(item.price).toFixed(2)}
+                    {item.quantity} x {formatMoney(item.price)}
                   </Heading>
                 </div>
                 <Heading
                   variant="body"
                   className="text-sm font-semibold !text-gray-800 shrink-0"
                 >
-                  ${(Number(item.price) * item.quantity).toFixed(2)}
+                  {formatMoney(Number(item.price) * item.quantity)}
                 </Heading>
               </div>
             ))}
@@ -164,39 +223,47 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
           Total
         </Heading>
         <Heading variant="body" className="text-2xl font-bold !text-gray-900">
-          ${Number(order.totalAmount).toFixed(2)}
+          {formatMoney(order.totalAmount)}
         </Heading>
       </div>
 
-      {isQuotation && confirmingConversion ? (
-        <div className="flex flex-col gap-3 rounded-lg border border-purple-200 bg-purple-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-purple-900">
-            ¿Convertir esta cotización en venta?
-          </p>
-          <div className="flex gap-2">
+      {pendingAction ? (
+        <div
+          className={`flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between ${
+            CONFIRMATION_TONE[CONFIRMATIONS[pendingAction].tone]
+          }`}
+        >
+          <p className="text-sm">{CONFIRMATIONS[pendingAction].question}</p>
+          <div className="flex shrink-0 gap-2">
             <Button
               type="button"
               variant="border"
               color="primary"
-              onClick={() => setConfirmingConversion(false)}
-              disabled={converting}
+              onClick={() => setPendingAction(null)}
+              disabled={mutating}
             >
-              Cancelar
+              Volver
             </Button>
             <Button
               type="button"
               variant="fill"
-              color="primary"
-              onClick={handleConvertToSale}
-              loading={converting}
-              disabled={converting}
+              color={
+                CONFIRMATIONS[pendingAction].tone === "red"
+                  ? "secondary"
+                  : "primary"
+              }
+              onClick={confirmActions[pendingAction]}
+              loading={mutating}
+              disabled={mutating}
             >
-              {converting ? "Convirtiendo..." : "Sí, convertir"}
+              {mutating
+                ? CONFIRMATIONS[pendingAction].busy
+                : CONFIRMATIONS[pendingAction].confirm}
             </Button>
           </div>
         </div>
       ) : (
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           {canPrintReceipt && (
             <Button
               type="button"
@@ -215,7 +282,7 @@ export function OrderDetailsModal({ order, close }: OrderDetailsModalProps) {
               type="button"
               variant="border"
               color="primary"
-              onClick={() => setConfirmingConversion(true)}
+              onClick={() => setPendingAction("convert")}
             >
               Convertir en venta
             </Button>
