@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IOSInstallHint } from "./IOSInstallHint";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -107,7 +108,7 @@ export function PWARegister() {
     setInstallPrompt(null);
   };
 
-  if (!installPrompt) return null;
+  if (!installPrompt) return <IOSInstallHint />;
 
   return (
     <div className="fixed bottom-5 right-5 z-50 w-[min(92vw,360px)] rounded-2xl border border-slate-700/60 bg-[linear-gradient(135deg,#0f172a_0%,#1e293b_100%)] p-4 text-slate-50 shadow-[0_18px_40px_rgba(15,23,42,0.35)] backdrop-blur-sm">
@@ -120,7 +121,7 @@ export function PWARegister() {
             Instala Evoventa
           </div>
           <div className="mt-1.5 text-sm leading-5 text-slate-300">
-            Accede más rápido y úsalo como aplicación nativa.
+            Accede más rápido desde tu dispositivo.
           </div>
         </div>
 

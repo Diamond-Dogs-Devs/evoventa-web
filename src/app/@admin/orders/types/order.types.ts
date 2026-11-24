@@ -34,3 +34,5 @@ export interface OrderLineItemI {
 export interface OrderDetailI extends OrderI {
   OrderItem: OrderLineItemI[];
 }
+
+export type PendingActionT = "convert" | "cancel";

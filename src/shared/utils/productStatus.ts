@@ -1,4 +1,4 @@
-import type { EntityCardBadgeTone } from "@/shared/components/EntityCard";
+import type { BadgeTone } from "@/shared/components/StatusBadge";
 
 /**
  * Mirrors the API's ProductStatus enum (evoventa-api/prisma/schema.prisma);
@@ -10,7 +10,7 @@ export const PRODUCT_STATUSES = {
   DISCONTINUED: { label: "Descontinuado", tone: "gray" },
 } as const satisfies Record<
   string,
-  { label: string; tone: EntityCardBadgeTone }
+  { label: string; tone: BadgeTone }
 >;
 
 export type ProductStatusT = keyof typeof PRODUCT_STATUSES;
@@ -18,15 +18,6 @@ export type ProductStatusT = keyof typeof PRODUCT_STATUSES;
 export const PRODUCT_STATUS_VALUES = Object.keys(
   PRODUCT_STATUSES,
 ) as ProductStatusT[];
-
-/** Badge classes per tone, for cards that don't use EntityCard. */
-export const PRODUCT_STATUS_BADGE_CLASSES: Record<EntityCardBadgeTone, string> =
-  {
-    blue: "bg-blue-100 text-blue-700",
-    gray: "bg-gray-100 text-gray-500",
-    red: "bg-red-100 text-red-700",
-    amber: "bg-amber-100 text-amber-800",
-  };
 
 export const getProductStatus = (status?: string | null) =>
   status && status in PRODUCT_STATUSES
@@ -39,3 +30,14 @@ export const getProductStatus = (status?: string | null) =>
  */
 export const isProductStatusSellable = (status?: string | null) =>
   !status || !(status in PRODUCT_STATUSES) || status === "AVAILABLE";
+
+/**
+ * Stock pill color: red when it can't be sold (no units, Agotado or
+ * Descontinuado), yellow when running low, green otherwise.
+ */
+export const getStockTone = (
+  quantity: number,
+  sellable: boolean,
+  lowStock = 5,
+): BadgeTone =>
+  quantity <= 0 || !sellable ? "red" : quantity <= lowStock ? "yellow" : "green";

@@ -12,6 +12,8 @@ interface OrdersContainerProps {
   pageSize: number;
   onPaginationChange: (page: number, size?: number) => void;
   onOrderClick?: (order: OrderI) => void;
+  /** Replaces the default empty-state message (e.g. no search results). */
+  emptyMessage?: string;
 }
 
 export function OrdersContainer({
@@ -22,13 +24,14 @@ export function OrdersContainer({
   pageSize,
   onPaginationChange,
   onOrderClick,
+  emptyMessage,
 }: OrdersContainerProps) {
   return (
     <div className="flex flex-col gap-4 min-h-[calc(100vh-10rem)]">
       {loading ? (
         <OrdersSkeleton count={pageSize} />
       ) : orders.length === 0 ? (
-        <OrdersEmptyState />
+        <OrdersEmptyState message={emptyMessage} />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {orders.map((order) => (

@@ -4,8 +4,9 @@ import { ComponentType, SVGProps } from "react";
 import cn from "classnames";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/shared/ui";
+import { BadgeTone, StatusBadge } from "@/shared/components/StatusBadge";
 
-export type EntityCardBadgeTone = "blue" | "gray" | "red" | "amber";
+export type EntityCardBadgeTone = BadgeTone;
 
 export interface EntityCardBadge {
   label: string;
@@ -50,13 +51,6 @@ export interface EntityCardProps {
   editLabel?: string;
   deleteLabel?: string;
 }
-
-const badgeTone: Record<EntityCardBadgeTone, string> = {
-  blue: "bg-blue-100 text-blue-700",
-  gray: "bg-gray-100 text-gray-500",
-  red: "bg-red-100 text-red-700",
-  amber: "bg-amber-100 text-amber-800",
-};
 
 const lineTone = {
   muted: "text-gray-500",
@@ -144,15 +138,11 @@ export function EntityCard({
         {badges.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-1">
             {badges.map((badge) => (
-              <span
+              <StatusBadge
                 key={badge.label}
-                className={cn(
-                  "text-xs font-medium px-1.5 py-0.5 rounded-full",
-                  badgeTone[badge.tone ?? "gray"],
-                )}
-              >
-                {badge.label}
-              </span>
+                label={badge.label}
+                tone={badge.tone}
+              />
             ))}
           </div>
         )}

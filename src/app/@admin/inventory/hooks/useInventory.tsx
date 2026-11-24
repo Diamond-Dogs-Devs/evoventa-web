@@ -14,6 +14,7 @@ import {
   ItemLike,
 } from "../types/inventory.types";
 import { DEFAULT_CRITICAL_STOCK, DEFAULT_LOW_STOCK } from "../utils/constants";
+import { formatMoney } from "@/shared/utils/format";
 
 const toItemPayload = (item: ItemLike): InventoryItemFormI => ({
   productId: String(item.productId),
@@ -193,7 +194,7 @@ export const useInventory = (selectedInventoryId?: number) => {
         cell: ({ getValue }) => {
           const salePrice = productMap[String(getValue())]?.salePrice;
           return salePrice != null
-            ? `$${Number(salePrice).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
+            ? formatMoney(salePrice)
             : "—";
         },
       },

@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import type { CartItemI, ClientI } from "../types/sales.types";
 import { PrintableReceipt } from "@/shared/components/PrintableReceipt";
+import { formatDate, formatMoney, formatTime } from "@/shared/utils/format";
 
 interface Props {
   cartItems: CartItemI[];
@@ -36,8 +37,8 @@ export function CheckoutScreen({
   const handlePrint = () => window.print();
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString("es-MX", { dateStyle: "long" });
-  const timeStr = now.toLocaleTimeString("es-MX", { timeStyle: "short" });
+  const dateStr = formatDate(now, "long");
+  const timeStr = formatTime(now);
 
   return (
     <>
@@ -113,12 +114,12 @@ export function CheckoutScreen({
                       {ip.product?.name ?? `Producto #${ip.productId}`}
                     </Heading>
                     <Heading variant="body" className="text-xs !text-gray-400 mt-0.5">
-                      {ip.product?.brand ?? "—"} · ${salePrice.toFixed(2)} c/u
+                      {ip.product?.brand ?? "—"} · {formatMoney(salePrice)} c/u
                     </Heading>
                   </div>
                   <div className="text-right shrink-0">
                     <Heading variant="body" className="text-sm font-bold !text-gray-800">
-                      ${(salePrice * quantity).toFixed(2)}
+                      {formatMoney(salePrice * quantity)}
                     </Heading>
                     <Heading variant="body" className="text-xs !text-gray-400">
                       {quantity} unid.
@@ -135,7 +136,7 @@ export function CheckoutScreen({
               Total
             </Heading>
             <Heading variant="body" className="text-3xl font-bold !text-gray-900">
-              ${total.toFixed(2)}
+              {formatMoney(total)}
             </Heading>
           </div>
         </Card>

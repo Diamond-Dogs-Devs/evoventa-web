@@ -3,22 +3,33 @@ import { useCustomSWR, fetcher } from "@/shared/api";
 import { useToast } from "@/shared/overlay-manager";
 import { ToastContent } from "@/shared/ui";
 import { usePagination } from "@/shared/utils";
+import { useListSearch } from "@/shared/hooks/useListSearch";
 import { OrderI, OrderUserI, OrderClientI } from "../types/order.types";
-import { OrderTypeFilterT } from "../utils";
+import { OrderStatusFilterT, OrderTypeFilterT } from "../utils";
 
 export const useOrders = () => {
   const { open } = useToast();
   const { currentPage, pageSize, onPaginationChange } = usePagination(10);
 
-  const [typeFilter, setTypeFilterState] = useState<OrderTypeFilterT>("");
+  const { search, onSearchChange, activeSearch, searchParam } =
+    useListSearch(() => onPaginationChange(1, pageSize));
 
-  // GET /orders already filters by ?type=ORDER|QUOTATION.
+  const [typeFilter, setTypeFilterState] = useState<OrderTypeFilterT>("");
+  const [statusFilter, setStatusFilterState] =
+    useState<OrderStatusFilterT>("");
+
+  // GET /orders filters by ?type= and ?status= (both can be combined).
   const ordersKey = `/orders?page=${currentPage}&limit=${pageSize}${
     typeFilter ? `&type=${typeFilter}` : ""
-  }`;
+  }${statusFilter ? `&status=${statusFilter}` : ""}${searchParam}`;
 
   const setTypeFilter = (type: OrderTypeFilterT) => {
     setTypeFilterState(type);
+    onPaginationChange(1, pageSize);
+  };
+
+  const setStatusFilter = (status: OrderStatusFilterT) => {
+    setStatusFilterState(status);
     onPaginationChange(1, pageSize);
   };
 
@@ -82,5 +93,10 @@ export const useOrders = () => {
     onPaginationChange,
     typeFilter,
     setTypeFilter,
+    statusFilter,
+    setStatusFilter,
+    search,
+    onSearchChange,
+    activeSearch,
   };
 };

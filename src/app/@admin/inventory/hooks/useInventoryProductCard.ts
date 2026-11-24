@@ -1,7 +1,9 @@
 import {
   getProductStatus,
+  getStockTone,
   isProductStatusSellable,
 } from "@/shared/utils/productStatus";
+import { formatMoney } from "@/shared/utils/format";
 import { InventoryProductI } from "../types/inventory.types";
 
 const LOW_STOCK_THRESHOLD = 5;
@@ -10,26 +12,21 @@ const LOW_STOCK_THRESHOLD = 5;
 export const useInventoryProductCard = (ip: InventoryProductI) => {
   const product = ip.product;
   const status = getProductStatus(product?.status);
-  const isOutOfStock =
-    ip.quantity === 0 || !isProductStatusSellable(product?.status);
-
-  const stockColor = isOutOfStock
-    ? "bg-red-100 text-red-600"
-    : ip.quantity <= LOW_STOCK_THRESHOLD
-      ? "bg-yellow-100 text-yellow-700"
-      : "bg-green-100 text-green-700";
+  const stockTone = getStockTone(
+    ip.quantity,
+    isProductStatusSellable(product?.status),
+    LOW_STOCK_THRESHOLD,
+  );
 
   const stockLabel = ip.quantity === 0 ? "Sin stock" : `Stock: ${ip.quantity}`;
 
   const formattedPrice =
-    product?.salePrice != null
-      ? `$${Number(product.salePrice).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`
-      : "—";
+    product?.salePrice != null ? formatMoney(product.salePrice) : "—";
 
   return {
     product,
     status,
-    stockColor,
+    stockTone,
     stockLabel,
     formattedPrice,
     name: product?.name ?? `Producto #${ip.productId}`,

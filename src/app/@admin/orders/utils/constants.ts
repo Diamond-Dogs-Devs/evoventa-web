@@ -1,8 +1,10 @@
+import type { BadgeTone } from "@/shared/components/StatusBadge";
+
 export interface OrderStatusConfig {
   /** Texto legible en español que se muestra al usuario. */
   label: string;
-  /** Clases de Tailwind para el badge (fondo + color de texto). */
-  badgeClassName: string;
+  /** Color del badge (ver shared/components/StatusBadge). */
+  tone: BadgeTone;
 }
 
 /**
@@ -10,42 +12,42 @@ export interface OrderStatusConfig {
  * envía el backend (en mayúsculas).
  */
 export const ORDER_STATUS_CONFIG: Record<string, OrderStatusConfig> = {
-  DRAFT: { label: "Borrador", badgeClassName: "bg-gray-100 !text-gray-600" },
+  DRAFT: { label: "Borrador", tone: "gray" },
   PENDING: {
     label: "Pendiente",
-    badgeClassName: "bg-yellow-100 !text-yellow-700",
+    tone: "yellow",
   },
   PAID: {
     label: "Pagada",
-    badgeClassName: "bg-green-100 !text-green-700",
+    tone: "green",
   },
   CONFIRMED: {
     label: "Confirmada",
-    badgeClassName: "bg-blue-100 !text-blue-700",
+    tone: "blue",
   },
   PROCESSING: {
     label: "En proceso",
-    badgeClassName: "bg-indigo-100 !text-indigo-700",
+    tone: "indigo",
   },
-  SHIPPED: { label: "Enviada", badgeClassName: "bg-blue-100 !text-blue-700" },
+  SHIPPED: { label: "Enviada", tone: "blue" },
   DELIVERED: {
     label: "Entregada",
-    badgeClassName: "bg-green-100 !text-green-700",
+    tone: "green",
   },
   COMPLETED: {
     label: "Completada",
-    badgeClassName: "bg-green-100 !text-green-700",
+    tone: "green",
   },
-  CANCELLED: { label: "Cancelada", badgeClassName: "bg-red-100 !text-red-600" },
+  CANCELLED: { label: "Cancelada", tone: "red" },
   REFUNDED: {
     label: "Reembolsada",
-    badgeClassName: "bg-orange-100 !text-orange-700",
+    tone: "orange",
   },
 };
 
 export const DEFAULT_ORDER_STATUS_CONFIG: OrderStatusConfig = {
   label: "Sin estatus",
-  badgeClassName: "bg-gray-100 !text-gray-600",
+  tone: "gray",
 };
 
 /**
@@ -65,9 +67,9 @@ export const getOrderStatusConfig = (
 
 export type OrderTypeT = "ORDER" | "QUOTATION";
 
-export const QUOTATION_BADGE = {
+export const QUOTATION_BADGE: { label: string; tone: BadgeTone } = {
   label: "Cotización",
-  badgeClassName: "bg-purple-100 !text-purple-700",
+  tone: "purple",
 };
 
 export type OrderTypeFilterT = "" | OrderTypeT;
@@ -76,4 +78,24 @@ export const ORDER_TYPE_FILTERS: { value: OrderTypeFilterT; label: string }[] = 
   { value: "", label: "Todas" },
   { value: "ORDER", label: "Ventas" },
   { value: "QUOTATION", label: "Cotizaciones" },
+];
+
+/**
+ * Statuses the API accepts on PATCH /orders/status/:id and on ?status=
+ * (evoventa-api orders/enum/order.enum.ts). PAID exists in the database but
+ * the API rejects it here with a 400, so it can't be set or filtered from the
+ * front.
+ */
+export const EDITABLE_ORDER_STATUSES = ["PENDING", "DELIVERED", "CANCELLED"] as const;
+
+export type EditableOrderStatusT = (typeof EDITABLE_ORDER_STATUSES)[number];
+
+export type OrderStatusFilterT = "" | EditableOrderStatusT;
+
+export const ORDER_STATUS_FILTERS: { value: OrderStatusFilterT; label: string }[] = [
+  { value: "", label: "Todos" },
+  ...EDITABLE_ORDER_STATUSES.map((value) => ({
+    value,
+    label: ORDER_STATUS_CONFIG[value].label,
+  })),
 ];

@@ -9,6 +9,7 @@ export interface ProductI {
   createdAt: string;
   updatedAt: string;
   barcode: string;
+  sku?: string | null;
   brand: string;
   category: string;
   status: string;

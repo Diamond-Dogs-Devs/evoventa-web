@@ -11,6 +11,7 @@ import {
 import { useSales } from "./hooks";
 import { CartPanel, ProductGrid, CheckoutScreen } from "./components";
 import Page from "@/shared/components/Page";
+import { formatMoney } from "@/shared/utils/format";
 
 const appConfig = {
   title: "Nueva Venta",
@@ -127,7 +128,7 @@ export default function SalesPage() {
             variant="body"
             className="font-bold text-lg !text-title-light"
           >
-            ${total.toFixed(2)}
+            {formatMoney(total)}
           </Heading>
           <ChevronRightIcon className="h-5 w-5" />
         </div>

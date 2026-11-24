@@ -4,6 +4,7 @@ import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { EntityCard } from "@/shared/components/EntityCard";
 import { ProductI } from "../types/product.types";
 import { PRODUCT_STATUSES, ProductStatusT } from "../utils/constants";
+import { formatMoney } from "@/shared/utils/format";
 
 interface ProductCardProps {
   product: ProductI;
@@ -38,7 +39,7 @@ export function ProductCard({
           ? [{ label: status.label, tone: status.tone }]
           : [{ label: product.status || "Sin status", tone: "gray" }]
       }
-      footer={{ primary: `$${Number(product.salePrice).toFixed(2)}` }}
+      footer={{ primary: formatMoney(product.salePrice) }}
       onEdit={() => onEdit(product)}
       onDelete={() => onDelete(product)}
       onClick={onClick ? () => onClick(product) : undefined}
